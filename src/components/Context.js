@@ -14,6 +14,7 @@ export const ContextProvider = ({children}) =>{
     const [appData, setAppData] = useState({});
     const [attachments, setAttachments] = useState({});
     const [initialFormData, setInitialFormData] = useState({})
+    const icons = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/spendFlow/intake/icons"
    
 
     const [pageList, setPageList] = useState([])
@@ -40,7 +41,8 @@ export const ContextProvider = ({children}) =>{
         requestTypes,
         setRequestTypes,
         initialFormData,
-        setInitialFormData
+        setInitialFormData,
+        icons
     }
 
     return(

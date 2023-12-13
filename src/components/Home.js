@@ -28,7 +28,8 @@ const Home = () => {
     users,
     setUsers,
     requestTypes,
-    setRequestTypes
+    setRequestTypes,
+    icons
   } = useContext(Context)
 
 
@@ -70,13 +71,14 @@ const Home = () => {
                 <div className="col-lg-6">
                 <h2 className="text-left">Select a common request type</h2>
                 <div className="=flex-fill shadow shadow-lg rounded-top-2" style={{backgroundImage: "linear-gradient(45deg, rgb(9, 128, 243), rgb(0, 223, 255))", height:25}}></div>
-                  <div className="d-flex bg-white shadow border border-1 rounded-bottom-2 p-3 flex-column justify-content-center">
-                    <div className="flex-fill p-2" style={{height:700, overflowY:"scroll"}}>
+                  <div className="d-flex bg-light shadow border border-1 rounded-bottom-2 p-3 flex-column justify-content-center">
+                    <div className="flex-fill bg-white flex-column" style={{height:700, overflowY:"scroll"}}>
                     {requestTypes.map((item, index)=>(
-                            <div key={index} id={item.name} className="card border-1  mb-3 p-3 shadow shadow-sm" style={{cursor: "pointer", zIndex:7}} onClick={(e)=>handleSelect(e)}>
-                              <h5 id={item.name} className="card-header">{item.name}</h5>
-                              <div id={item.name} className="card-body p-2">
-                                <p id={item.name} className="card-text">{item.description} </p>
+                            <div key={index} id={item.name} className="d-flex border border-1 border-light shadow shadow-sm p-3" style={{cursor: "pointer", zIndex:7}} onClick={(e)=>handleSelect(e)}>
+                              <img src={item.icon || "other_request_icon.png"} alt={`${item.name} icon`} style={{maxHeight: 50, maxWidth: 50}}></img>
+                              <div className="d-flex flex-column ps-3">
+                                <div id={item.name} style={{fontSize: 18, fontWeight: 'bold'}}>{item.name}</div>
+                                <div id={item.name}  style={{fontSize: 14, color: 'gray'}}>{item.description} </div>
                               </div>
                             </div>
                     ))}

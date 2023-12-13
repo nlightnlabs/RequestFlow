@@ -56,25 +56,31 @@ const Header = () => {
     }
 
   const handleMenuOption=(elem)=>{
+
+    console.log(pageList)
+    
     if(elem == "newRequestButton"){
       let nextPage = "Home"
       setPageList([nextPage])
+      setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
     }
     if(elem == "allRequestsButton"){
       let nextPage = "Requests"
-      setPageList([nextPage])
+      setPageList([...pageList,nextPage])
+      setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
     }
     if(elem == "updateButton"){
       let nextPage = "User Info"
-      setPageList([nextPage])
+      setPageList([...pageList,nextPage])      
+      setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
     }
     if(elem == "signOutButton"){
       let nextPage = "Log In"
       setPageList([nextPage])
-      setPageName(nextPage)
+      setPage(pages.filter(x=>x.name===nextPage)[0])
       setUserData({
         first_name: "",
         email: "",
@@ -82,6 +88,7 @@ const Header = () => {
       setUser({})
       setAppData({})
       setUserLoggedIn(false)
+      setPageName(nextPage)
     }
   }
 

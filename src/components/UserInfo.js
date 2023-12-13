@@ -45,7 +45,7 @@ const UserInfo = () => {
 
   const [businessUnits, setBusinessUnits] = useState([])
 
-  let user_info ={}
+  let user_info = {...appData.user_info}
 
   const handleChange = (e)=>{
       let {name, value} = e.target
@@ -97,8 +97,10 @@ const UserInfo = () => {
     if(e.nativeEvent.submitter.name==="backButton"){
         setFormClassList("form-group")
         let pageListCopy = pageList
+        console.log(pageList)
         let thisPage = pageListCopy.splice(-1)
         let nextPage = pageListCopy[pageListCopy.length-1]
+        console.log(nextPage)
         setPageList(pageListCopy)
         setPage(pages.filter(x=>x.name===nextPage)[0])
         setPageName(nextPage)
@@ -155,9 +157,7 @@ const UserInfo = () => {
 const getBusinessUnits = async ()=>{
     const response = await axios.get("/db/table/business_units")
     const data = await response.data
-
-    console.log(data)
-
+    
     let businessUnitSet = new Set()
       await data.forEach(item=>{
         businessUnitSet.add(item.name)
@@ -171,6 +171,7 @@ const getBusinessUnits = async ()=>{
     console.log(pageList)
     getBusinessUnits()
   },[])
+
 
   const [pageClass, setPageClass] = useState("container mt-5 animate__animated animate__fadeIn animate__duration-0.5s")
   
