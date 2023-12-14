@@ -112,7 +112,7 @@ function App() {
   return (
     <div style={pageStyle}>
 
-        {(!userLoggedIn || pageName == "Log In") && 
+        {(!userLoggedIn && pageName == "Log In") && 
           <>
             <Login/>
             <div className="d-flex justify-content-center mt-5 ">

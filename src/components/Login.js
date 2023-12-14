@@ -59,37 +59,32 @@ const Login = () => {
     
     e.preventDefault()
     const form = e.target
-
-
     const validateUser = async(req, res)=>{
-
-
-        if(Object.keys(appData)==0){
-          let formData = {...appData[`${page.data}`],...{}}
-          setAppData({...appData,[`${page.data}`]:formData})
-          setLogInErrorMsg(`${String.fromCharCode(10060)} invalid user information.`)
-          setLogInClassName("text-danger mt-0 mb-3 animate__animated animate__fadeIn ")
+      if(Object.keys(appData)==0){
+        let formData = {...appData[`${page.data}`],...{}}
+        setAppData({...appData,[`${page.data}`]:formData})
+        setLogInErrorMsg(`${String.fromCharCode(10060)} invalid user information.`)
+        setLogInClassName("text-danger mt-0 mb-3 animate__animated animate__fadeIn ")
+      }
+      else{
+        console.log(appData)
+        const params = {
+            email: appData.user_info.email,
+            pwd: appData.user_info.pwd
         }
-        else{
-          console.log(appData)
-          const params = {
-              email: appData.user_info.email,
-              pwd: appData.user_info.pwd
-          }
-          const headers={
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            // 'Authorization': 'Bearer yourAccessToken',
-          } 
-          try{
-              const submitLoggin = await axios.post(`/db/authenticateUser`,{params},{headers})
-              const userValidated = submitLoggin.data
-              return userValidated
-          }catch(error){
-              console.log(error)
-          }
-
+        const headers={
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          // 'Authorization': 'Bearer yourAccessToken',
+        } 
+        try{
+            const submitLoggin = await axios.post(`/db/authenticateUser`,{params},{headers})
+            const userValidated = submitLoggin.data
+            return userValidated
+        }catch(error){
+            console.log(error)
         }
+      }
         
     }
 
@@ -114,6 +109,7 @@ const Login = () => {
     if(e.nativeEvent.submitter.name==="sign_up"){
       setFormClassList("form-group")
       let nextPage = "User Info"
+      setPageList([...pageList,nextPage])
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
     }else{
