@@ -2,8 +2,8 @@ import React, {useState, useEffect, useContext, useRef, createRef} from 'react'
 import { Context } from "./Context.js"
 import axios from './axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
-
 import 'animate.css';
+import SuperInput from './SuperInput.js'
 
 const SoftwareAccess = () => {
 
@@ -251,42 +251,35 @@ const handleReset = ()=>{
               <label htmlFor="subject" className="form-label text-body-tertiary small">Summarize what you need</label>
             </div>
 
-            <div className="form-floating mb-3 has-validation">
-              <select 
+
+            <div className="form-floating mb-3">
+              <SuperInput
                 key={productRef}
                 id = "product" 
                 name="product"
-                className="form-select text-primary"
-                placeholder = "Select a product that is needed" 
+                list={products}
                 value={initialFormData.product}
-                onChange={handleChange}
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {products.map(item=>(
-                  <option className="option light" key={products.indexOf(item)+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="category" className="form-label text-body-tertiary">What software product do you need?</label>
+                valueColor="#2C7BFF"
+                onChange={handleChange} 
+                label={"Select a preferred supplier if known"}
+                required={true}
+                />
               <div className="text-secondary small"><img src={addIcon} style={addIconStyle} onClick={(e)=>addProduct(e)}></img>Add product</div>
             </div>
-            
+
+
             <div className="form-floating mb-3">
-              <select 
+              <SuperInput
                 key={supplierRef}
                 id = "supplier" 
                 name = "supplier" 
-                className="form-select text-primary" 
-                placeholder="Select a preferred supplier for this purchase"
+                list={suppliers}
                 value={initialFormData.supplier}
+                valueColor="#2C7BFF"
                 onChange={handleChange} 
-                defaultValue=""
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {suppliers.map(item=>(
-                  <option className="option light " key={suppliers.indexOf(item)+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="supplier" className="form-label text-body-tertiary">Select a preferred supplier if known</label>
+                label={"Select a preferred supplier if known"}
+                required={true}
+                />
               <div className="text-secondary small"><img src={addIcon} style={addIconStyle} onClick={(e)=>addSupplier(e)}></img>Add supplier</div>
             </div>
 

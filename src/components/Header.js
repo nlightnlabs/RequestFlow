@@ -93,7 +93,7 @@ const Header = () => {
   }
 
   return (
-            <div className="d-flex justify-content-end bg-light positin-fixed">
+            <div className="d-flex justify-content-end bg-light" style={{position: "sticky",top: 0}}>
               {userLoggedIn && 
               <div className="d-flex flex-column p-2">
                 <span className="text-secondary" style={{fontSize:12}}>Hello</span>

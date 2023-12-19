@@ -3,6 +3,7 @@ import { Context } from "./Context.js"
 import axios from './axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
+import SuperInput from './SuperInput.js'
 
 const Sourcing = () => {
 
@@ -246,19 +247,16 @@ const handleReset = ()=>{
                   {items.map((item, index)=>(
                     <tr key={index} id={`user_${index}`} ref={usernameRefs.current[index]}>
                       <td>
-                        <select 
+                        <SuperInput
                           id={`item_${index}_category`}
                           name={`item_${index}_category`}
-                          className="form-select text-primary"
-                          style={{fontSize: 12}}
+                          list={categories}
                           value={items[index].category}
-                          onChange={(e)=>handleUserInput(e, index)} 
-                          >
-                          <option value="" style={{color: "lightgray"}}></option>
-                          {categories.map(item2=>(
-                            <option className="option light" key={index+1}>{item2}</option>
-                          ))}
-                        </select>                      
+                          valueColor="#2C7BFF"
+                          onChange={handleChange} 
+                          height={38}
+                          required={inputRequired(index)}
+                          />
                       </td>
                       <td><input id={`item_${index}_products`} name={`item_${index}_products`} className="form-control text-primary" style={{fontSize: 12}} type="text" onChange={(e)=>handleUserInput(e, index)} value={items[index].quantity}></input></td>
                       <td id={`remove_item_${index}`} className="small bg-second"><img src={removeIcon} style={removeIconStyle} onClick={(e)=>removeItem(e, index)}></img></td>

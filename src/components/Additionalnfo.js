@@ -126,10 +126,26 @@ const AdditionalInfo = () => {
           appDataCopy = {...appData, request_summary}
           setAppData({...appData, request_summary})
         }
-        
-        console.log(appData)
 
-        const insertNewRequestQuery = `INSERT INTO requests(
+        const getRecordId = async (req, res)=>{
+          const getNewRecordIDQuery = `Select id from requests where requester_user_id ='${appData.user_info.id}' order by id desc limit 1;`
+          console.log(getNewRecordIDQuery)
+
+          try{  
+            const responseId = await axios.post(`/db/query`,{query: getNewRecordIDQuery})
+            console.log(responseId)
+
+            const id = await responseId.data[0]
+            console.log(id)
+
+            let request_summary = {...appDataCopy.request_summary,...id}
+            setAppData({...appData, request_summary})
+          }catch(error){
+            console.log(error)
+          }
+        }
+
+        const insertNewRequestQuery = `INSERT INTO requests (
           requester, 
           request_type, 
           subject, 
@@ -138,7 +154,8 @@ const AdditionalInfo = () => {
           attachments,
           stage,
           status,
-          request_date
+          request_date,
+          requester_user_id
           )
           values(
             '${appDataCopy.request_summary.requester || "No requester on record"} ',
@@ -149,24 +166,25 @@ const AdditionalInfo = () => {
             '${JSON.stringify(appDataCopy.request_summary.attachments).replace(/"/g,'') || "No attachments"}',
             'Draft',
             'Open',
-            '${((new Date()).toLocaleDateString('en-US')) || " "}'
+            '${((new Date()).toLocaleDateString('en-US')) || " "}',
+            '${appDataCopy.user_info.id}'
           );`
           
-    
           console.log(insertNewRequestQuery)
+
           try {
               const submitResponse = await axios.post(`/db/query`,{query: insertNewRequestQuery})
               const data = await submitResponse.data
-              console.log(data)
+              await getRecordId()
+
+              let nextPage = "Request Summary"
+              setPage(pages.filter(x=>x.name===nextPage)[0])
+              setPageList([...pageList,nextPage])
+              setPageName(nextPage)
 
           }catch(error){
               console.log(error)
           }
-
-        let nextPage = "Request Summary"
-        setPage(pages.filter(x=>x.name===nextPage)[0])
-        setPageList([...pageList,nextPage])
-        setPageName(nextPage)
       }
       setFormClassList('form-group was-validated')
     }
@@ -214,7 +232,7 @@ const AdditionalInfo = () => {
 
         <div className="col-lg-6">
           
-          <h1 className="text-left mb-5 border-bottom border-5">Additonal Info</h1>
+          <h1 className="text-left mb-5 border-bottom border-5">Additional Info</h1>
 
           <div className="d-flex flex-column bg-light shadow border border-2 rounded p-3">
 

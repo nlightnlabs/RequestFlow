@@ -24,6 +24,7 @@ import Header from './components/Header.js';
 import Requests from './components/Requests.js';
 import Test from './components/Test.js';
 import 'animate.css';
+import LandingPage from './components/LandingPage.js';
 
 function App() {
 
@@ -129,6 +130,8 @@ function App() {
           <>{pages.filter(x=>x.name===pageName)[0].component}</>
           </>
         }
+
+        {/* <LandingPage/> */}
 
     </div>
   );

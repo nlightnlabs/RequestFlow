@@ -50,33 +50,6 @@ const Requests = () => {
     }
   }
 
-  const requestsByStage = [
-    { label: 'Draft', value: 30 },
-    { label: 'Category B', value: 50 },
-    { label: 'Category C', value: 78 },
-    { label: 'Category D', value: 80 },
-    { label: 'Category E', value: 90 },
-    { label: 'Category F', value: 95 },
-    { label: 'Category G', value: 100 },
-  ];
-
-  const requestsByType = [
-    { label: 'Purchase Requests', value: 30 },
-    { label: 'Software Access', value: 28 },
-    { label: 'IT Equipment', value: 22 },
-    { label: 'Temporary Staff', value: 15 },
-    { label: 'Contract', value: 10 },
-    { label: 'Sourcing', value: 8 },
-    { label: 'Budget', value: 3 },
-    { label: 'IT Support', value: 2 },
-    { label: 'HR Support', value: 2 },
-    { label: 'Other', value: 1 }
-  ];
-
- //create pareto data
-//  const requestsByTypeParetoData = createParetoData(data=requestData, category='request_type', aggregation_type='count', field_to_aggregate="")
-//  const requestsByStageParetoData = createParetoData(data=requestData,category='stage', aggregation_type='count',field_to_aggregate="")
-
   
   useEffect(()=>{
     getRequestData()
@@ -107,28 +80,63 @@ const Requests = () => {
     <div className="flex-container">
       <div className="row-sm p-0">
       <div className="col-sm-12 p-3">
-        <div className="d-flex flex-column pe-0 ps-0 bg-light">
+        <div className="d-flex flex-column bg-light">
 
             <h1>Requests</h1>
             {/* Charts container */}
-            <div className="d-flex d-md-none justify-content-center flex-wrap p-0" >
-              <div className="flex-fill border border-1 p-2 bg-white" style={{minHeight: 300, minWidth: 400}}>
-              <ParetoChart barData={[]} lineData={[]} chartWidth={200} chartHeight={300}/>
+            <div className="d-flex flex-wrap justify-content-around p-3" >
+
+              <div className="d-flex border border-1 bg-white justify-content-center rounded-3 shadow" style={{minWidth: 400, minHeight: 200}}>
+                <ParetoChart 
+                  chartWidth = {500}
+                  chartHeight = {250}
+                  tableName = {"requests"}
+                  chartTitle = {"Requests By Stage"}
+                  categoryLabels = {"stage"}
+                  aggregationMethod = {"count"}
+                />
               </div>
+
+              <div className="d-flex border border-1 bg-white justify-content-center rounded-3 shadow" style={{minWidth: 400, minHeight: 200}}>
+                <ParetoChart 
+                  chartWidth = {500}
+                  chartHeight = {250}
+                  tableName = {"requests"}
+                  chartTitle = {"Requests By Type"}
+                  categoryLabels = {"request_type"}
+                  aggregationMethod = {"count"}
+                  fillColor = {"#A9D18E"}
+                  strokeColor = {"#70AD47"}
+                  xAxisLabelRotation = {-90}
+                  xAxisTextAnchor = {"end"}
+                  xAxisXTextOffset = {-20}
+                  xAxisYTextOffset = {30}
+                  bottomMargin = {50}
+                  xAxisLabelWrapWidth = {50}
+
+                />
+              </div>
+
+              <div className="d-flex border border-1 bg-white justify-content-center rounded-3 shadow" style={{minWidth: 400, minHeight: 200}}>
+                <ParetoChart 
+                 chartWidth = {500}
+                 chartHeight = {250}
+                  tableName = {"requests"}
+                  chartTitle = {"Requests By Stage"}
+                  categoryLabels = {"stage"}
+                  aggregationMethod = {"count"}
+                />
+              </div>
+
+
             </div>
 
-            <div className="d-none d-md-flex justify-content-between p-3" style={{minHeight:200, overflow:"auto"}}>
-              <div className="flex-fill border border-1 rounded rounded-2 shadow p-2 m-3 bg-white" style={{minHeight: 300, minWidth: 400}}>
-                
-              </div>
-              <div className="flex-fill border border-1 rounded rounded-2 shadow p-2 m-3 bg-white" style={{minHeight: 300, minWidth: 400}}></div>
-              <div className="flex-fill border border-1 rounded rounded-2 shadow p-2 m-3 bg-white" style={{minHeight: 300, minWidth: 400}}></div>
-            </div>
+
  
             {/* Show table container for large screen size */}
             {requestData.length>0 &&
-            <div className="d-none d-md-flex flex-column p-3 shadow bg-white" style={{height: "50vh", overflowY:"auto"}}>
-              <Table data={requestData} setData={setRequestData}/>
+            <div className="d-none d-md-flex flex-column p-3 border border-1 rounded-3 shadow bg-white" style={{height: "50vh", overflowY:"auto"}}>
+              <Table data={requestData}/>
             </div>
             }
 

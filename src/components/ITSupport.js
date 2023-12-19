@@ -2,8 +2,9 @@ import React, {useState, useEffect, useContext, useRef} from 'react'
 import { Context } from "./Context.js"
 import axios from './axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
-
 import 'animate.css';
+import SuperInput from './SuperInput.js'
+
 
 const ITSupport = () => {
 
@@ -149,23 +150,18 @@ const handleReset = ()=>{
               <input id = "subject" name= "subject" className="form-control form-control text-primary" value={initialFormData.subject} onChange={handleChange} placeholder="Provide a subject or headline for this request" required></input>
               <label htmlFor="subject" className="form-label text-body-tertiary small">Summarize what you need</label>
             </div>
-            
-            <div className="form-floating mb-3 has-validation">
-              <select
-                ref={categoryRef}
+
+            <div className="form-floating mb-3">
+              <SuperInput
                 id = "it_support_type" 
                 name="it_support_type"
-                className="form-select text-primary"
-                placeholder = "Select type of support you need" 
+                list={categories}
                 value={initialFormData.it_support_type}
-                onChange={handleChange}
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {categories.map(item=>(
-                  <option className="option light" key={categories.indexOf(item)+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="category" className="form-label text-body-tertiary">Select type of support you need</label>
+                valueColor="#2C7BFF"
+                onChange={handleChange} 
+                label={"Select type of support you need"}
+                required={true}
+                />
             </div>
             
             

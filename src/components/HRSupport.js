@@ -2,8 +2,8 @@ import React, {useState, useEffect, useContext, useRef} from 'react'
 import { Context } from "./Context.js"
 import axios from './axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
-
 import 'animate.css';
+import SuperInput from './SuperInput.js'
 
 const HRSupport = () => {
 
@@ -155,22 +155,18 @@ const handleReset = ()=>{
               <label htmlFor="subject" className="form-label text-body-tertiary small">Summarize what you need</label>
             </div>
             
-            <div className="form-floating mb-3 has-validation">
-              <select
-                ref={categoryRef}
+
+            <div className="form-floating mb-3">
+              <SuperInput
                 id = "hr_support_type" 
                 name="hr_support_type"
-                className="form-select text-primary"
-                placeholder = "Select type of support you need" 
+                list={categories}
                 value={initialFormData.hr_support_type}
-                onChange={handleChange}
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {categories.map(item=>(
-                  <option className="option light" key={categories.indexOf(item)+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="category" className="form-label text-body-tertiary">Select type of support you need</label>
+                valueColor="#2C7BFF"
+                onChange={handleChange} 
+                label={"Select type of support you need"}
+                required={true}
+                />
             </div>
             
             

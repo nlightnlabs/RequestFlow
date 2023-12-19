@@ -2,8 +2,8 @@ import React, {useState, useEffect, useContext, useRef, createRef} from 'react'
 import { Context } from "./Context.js"
 import axios from './axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
-
 import 'animate.css';
+import SuperInput from './SuperInput.js'
 
 const ITEquipment = () => {
 
@@ -232,34 +232,37 @@ const handleReset = ()=>{
               <table className="table w-100 border rounded rounded-2">
                 <thead>
                   <tr className="text-center text-small">
-                    <th>Item</th>
-                    <th>Quantity</th>
-                    <th></th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col"></th>
                   </tr>
                   <tr className="table-group-divider"></tr>
                 </thead>
                 <tbody className="table-group-divider text-small">
                   {items.map((item, index)=>(
-                    <tr key={index} id={`user_${index}`} ref={usernameRefs.current[index]}>
+                    <tr scope="row" key={index} id={`user_${index}`} ref={usernameRefs.current[index]}>
                       <td style={{width: "65%"}}>
-                      <div className="form-group">
-                      <select 
+                        <SuperInput
                           id={`item_${index}_name`}
                           name={`item_${index}_name`}
-                          className="form-select text-primary"
+                          list={categories}
                           value={items[index].name}
-                          onChange={(e)=>handleUserInput(e, index)} 
-                          {...inputRequired(index)}
-                          >
-                          <option value="" style={{color: "lightgray"}}></option>
-                          {categories.map(item2=>(
-                            <option className="option light" key={categories.indexOf(item2)+1}>{item2}</option>
-                          ))}
-                        </select>
-                      </div>
+                          valueColor="#2C7BFF"
+                          onChange={handleChange} 
+                          height={38}
+                          required={inputRequired(index)}
+                          />
                       
                       </td>
-                      <td><input id={`item_${index}_quantity`} name={`item_${index}_quantity`} className="form-control text-primary" type="number" min="0" onChange={(e)=>handleUserInput(e, index)} value={items[index].quantity} {...inputRequired(index)}></input></td>
+                      <td >
+                        <input 
+                          id={`item_${index}_quantity`} 
+                          name={`item_${index}_quantity`} 
+                          className="form-control text-primary" 
+                          type="number" min="0" onChange={(e)=>handleUserInput(e, index)} 
+                          value={items[index].quantity} {...inputRequired(index)}
+                        >
+                          </input></td>
                       <td id={`remove_item_${index}`} className="small bg-second"><img src={removeIcon} style={removeIconStyle} onClick={(e)=>removeItem(e, index)}></img></td>
                     </tr>
                   ))}

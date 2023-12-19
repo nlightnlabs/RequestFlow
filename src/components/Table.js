@@ -1,122 +1,138 @@
-import React, {useState, useRef, createRef, useEffect} from 'react'
+import React, {useState, useEffect, useMemo, useCallback} from 'react'
+import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
+import "ag-grid-community/styles/ag-grid.css"; // Core CSS
+import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
+import axios from './axios.js'
+import DraggableDiv from './DraggableDiv.js';
 
-const Table = ({data, setData}) => {
 
-  const headers= Object.keys(data[0])
+const Table = (props) => {
 
-  const handleCellChange = (e, row_index)=>{
-    const {id,name, value} = e.target
-    let new_value = {[name]: value}
-    let new_row = {...data[row_index],...new_value}
-    let new_data = data
-    new_data[row_index] = new_row
-    setData([...data,new_data])
-  }
+    const data = props.data;
+    const [fields, setFields] = useState([])
+    
 
-  const calculate=(e,row_index, col_index)=>{
-    let {id,name, value} = e.target
-    if(value.toString().slice(0,1)=="="){
-      try {
-        value = eval(value.toString().slice(1))
-        let new_value = {[name]: value}
-        let new_row = {...data[row_index],...new_value}
-        let new_data = data
-        new_data[row_index] = new_row
-        setData([...data,new_data])
-      } catch (error) {
-        setData(data)
+    const headers= ()=>{
+      let fieldList = []
+      if(data.length>0){
+        Object.keys(data[0]).map((field,index)=>(
+          fieldList.push({field: field, filter: true})
+        ))
+        setFields(fieldList)
       }
     }
-  }
 
-  const handleClick = (e, row_index)=>{
-    console.log(data[row_index])
-  }
-
-  const cellProps = {readOnly : true, disabled: true}
-
-
-  const tableStyles=`
-    .table-container {
-      max-height: 100%; 
-      overflow: auto; 
-      min-width: max-content
-    }
-    
-    .std-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-     
-    .std-table th,
-    .std-table td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd; /* Add bottom border for cells */
-    }
-    
-    .std-table tbody tr:nth-child(even) {
-      background-color: rgb(250,250,250) /* Alternate row background color */
-    }
-  
-    .std-table tbody tr:hover {
-      background-color: rgb(235,245,255)
-    }
-  
-    .std-table th{
-      position: sticky;
-      top:0;
-      background-color: white;
-      padding: 0;
-      padding-top: 5px;
-    }
-  
-    .divider{
-      display: block;
-      width: 100%;
-      height: 4px;
-      background-color: gray;
-    }
-  
-    .th-label{
-      padding: 10px
-    }
-  
-    .std-table input{
-      border: none;
-      background: none;
-    }
-  }`
+    //Record Details Window
+    const [selectedRecord, setSelectedRecord] = useState({})
+    const [showRecordDetails, setShowRecordDetails] = useState(false)
+    const approveButtonLabel = props.approveButtonLabel
+    const denyButtonLabel = props.denyButtonLabel
+    const [activityData, setActivityData] = useState(props.activityData || [])
 
 
-  return (
-    <div className="table-container">
+    const getActivityData = async(req, res)=>{
       
-      <table className="std-table">
-        <thead>
-          <tr >{headers.map((col,index)=>(<th key={index}>
-            <label className="th-label">{col}</label>
-            <div className="divider"></div></th>))}</tr>
-        </thead>
-        <tbody>
-          {
-            data.map((row,row_index)=>(
-              <tr style={{zIndex: 10}} key={row_index} onClick={(e)=>handleClick(e, row_index)}>{headers.map((col,col_index)=>(
-              <td key={col_index} onClick={(e)=>handleClick(e, row_index)}>
-                <input 
-                  id={`R${row_index+1}C${col_index}`} 
-                  name={col} value={row[col]} 
-                  onChange={(e)=>handleCellChange(e, row_index)} 
-                  onBlur={e=>{calculate(e, row_index, col_index)}}
-                  {...cellProps}
-                  ></input>
-              </td>))}
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-      <style>{tableStyles}</style>
+      try{
+        const response = await axios.get('/db/query/table/activities')
+        const data = await response.data
+        setActivityData(data)
+      }catch(error){
+        console.log(error)
+      }
+    }
+
+    const onCellClicked = (event) => {
+      console.log(event)
+      setSelectedRecord(event.data)
+      setShowRecordDetails(true)
+    }
+    const handleRecordDetailForm =(e)=>{
+      console.log(e.target.name)
+      setShowRecordDetails(false)
+    }
+
+    const handleChange =(e)=>{
+
+    }
+
+    const toProperCase = (str)=>{
+      try{
+        return str.split(" ")
+       .map(w => w[0].toUpperCase() + w.substring(1).toLowerCase())
+       .join(" ").replaceAll("_"," ")
+      }catch(error){
+        return str
+      }
+    }
+
+    useEffect(()=>{
+      headers()
+    },[props])
+
+  
+  return (
+      <div className="ag-theme-quartz" style={{ height: "100%", width: "100%" }}>
+        <AgGridReact 
+          rowData={data} 
+          columnDefs={fields} 
+          onCellClicked={onCellClicked}
+        />
+        {
+          showRecordDetails && 
+          <div className="d-flex flex-column border border-1 rounded-3 shadow bg-light p-3" style={{position: "absolute", top: 0, right: 0, height: "100%", width: 1000, overflowY:"auto", overflowX: "hidden", zIndex: 1000}}>
+              
+              <div className="d-flex justify-content-end mb-3">
+                <div className="button-group">
+                  {approveButtonLabel && <button className="btn btn-primary" name="approveButton" onClick={(e)=>{handleRecordDetailForm(e)}}>{approveButtonLabel}</button>}
+                  {denyButtonLabel && <button className="btn btn-outline-danger" name="denyButton" onClick={(e)=>{handleRecordDetailForm(e)}}>{denyButtonLabel}</button>}
+                  <button className="btn btn-outline-secondary" name="closeButton" onClick={(e)=>{handleRecordDetailForm(e)}}>Close</button>
+                </div>
+              </div>
+
+              <div className="d-flex flex-fill flex-column w-100">
+                <h4>Workflow Status</h4>
+                <div className="d-flex flex-fill flex-column w-100 p-3 bg-white border border-1" style={{position: "relative", height:350, width: "100%", overflow:'auto'}} >
+                    <DraggableDiv label={"Submitted"} startingCoordinates={{x: 50, y:100}}/>
+                    <DraggableDiv label={"Inventory Check"} startingCoordinates={{x: 250, y:25}}/>
+                    <DraggableDiv label={"Catalog Check"} startingCoordinates={{x: 250, y:200}}/>
+                    <DraggableDiv label={"Sourcing Required?"} startingCoordinates={{x: 450, y:100}}/>
+                    <DraggableDiv label={"Route For Sourcing"} startingCoordinates={{x: 650, y:200}}/>
+                    <DraggableDiv label={"Budget Check"} startingCoordinates={{x: 650, y:25}}/>
+                    <DraggableDiv label={"Close"} startingCoordinates={{x: 850, y:100}}/>
+                </div>
+                
+              </div>
+
+            <div className="d-flex" style={{overflowY: 'auto', position: 'relative'}}>
+              <div className="d-flex flex-column w-50 p-3">
+              <h4>Details</h4>    
+              <form>
+                {(Object.keys(selectedRecord)).map((item,index)=>(
+                  <div key={index} 
+                    className="form-group mb-2">
+                    <input className="form-control" value={selectedRecord[item]} onChange={(e)=>handleChange(e)}></input>
+                    <label className="form-label">{toProperCase(item)}</label>
+                  </div>
+                ))}
+              </form>
+              </div>
+
+              <div className="d-flex flex-column w-50 p-3 p-3">
+                <h4>Activity</h4>
+                <div>
+                  { typeof activityData =="object" && activityData.length>0?
+                    <div>{activityData.map((item,index)=>(<div key={index}>{item.timestamp}:  {item.description}</div>))}</div>
+                  :
+                    <div>No activities logged to this record</div>
+                  }
+                </div>
+              </div>
+
+            </div>
+            
+
+          </div>
+        }          
     </div>
   )
 }

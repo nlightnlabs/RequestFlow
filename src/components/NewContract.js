@@ -2,8 +2,8 @@ import React, {useState, useEffect, useContext, useRef} from 'react'
 import { Context } from "./Context.js"
 import axios from './axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
-
 import 'animate.css';
+import SuperInput from './SuperInput.js'
 
 const NewContract = () => {
 
@@ -168,44 +168,34 @@ const handleReset = ()=>{
               <input id = "subject" name= "subject" className="form-control form-control text-primary" value={initialFormData.subject} onChange={handleChange} placeholder="Provide a subject or headline for this request" required></input>
               <label htmlFor="subject" className="form-label text-body-tertiary small">Summarize what you need</label>
             </div>
-            
+
             <div className="form-floating mb-3">
-              <select 
+              <SuperInput
                 id = "counter_party" 
                 name = "counter_party" 
-                className="form-select text-primary" 
-                placeholder="Select a counter party for this agreement"
+                list={businesses}
                 value={initialFormData.counter_party}
+                valueColor="#2C7BFF"
                 onChange={handleChange} 
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {businesses.map(item=>(
-                  <option className="option light" key={businesses.indexOf(item)+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="supplier" className="form-label text-body-tertiary">Select a counter party for this agreement</label>
+                label={"Select a counter party for this contract"}
+                required={true}
+                />
               <div className="text-secondary small"><img src={addIcon} style={iconStyle} onClick={(e)=>addSupplier(e)}></img>Add business</div>
-              
-            </div>
-
-            <div className="form-floating mb-3 has-validation">
-              <select
-                ref={categoryRef}
-                id = "contract_type" 
-                name="contract_type"
-                className="form-select text-primary"
-                placeholder = "Select spend contract type" 
-                value={initialFormData.contract_type}
-                onChange={handleChange}
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {categories.map(item=>(
-                  <option className="option light" key={categories.indexOf(item)+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="category" className="form-label text-body-tertiary">Select spend contract type</label>
             </div>
             
+            <div className="form-floating mb-3">
+              <SuperInput
+                ref={categoryRef}
+                id = "counter_party" 
+                name = "counter_party" 
+                list={categories}
+                value={initialFormData.contract_type}
+                valueColor="#2C7BFF"
+                onChange={handleChange} 
+                label={"Select contract type"}
+                required={true}
+                />
+            </div>
             
             <div className="form-floating mb-3">
               <textarea 

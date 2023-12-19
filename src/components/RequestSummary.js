@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import SuccessIcon from './success_icon.svg';
 import {toProperCase} from './formatValue.js'
+import updateActivity from './updateActivity.js';
 
 const RequestSummary = () => {
 
@@ -37,20 +38,18 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
   
  const boxStyle={
     width: "100%",
-    // maxHeight: "300px",
-    // overflowY: "auto",
  }
 
  const [files, setFiles] = useState([])
 
+ 
+
  useEffect(()=>{
+    console.log(appData)
     let x = Array.from(attachments)
     setFiles(x)
 
-    console.log(appData)
-    console.log(page)
-    console.log(pageList)
-
+    updateActivity({app:"requests",record: appData.request_summary.id , user:user,description:"New request submitted"});
  },[])
 
  const handleSubmit = (e)=>{
@@ -69,7 +68,6 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
     setPageList([...pageList,nextPage])
     setPageName(nextPage)
  }
-
 
   return (
     <div className = {pageClass}>

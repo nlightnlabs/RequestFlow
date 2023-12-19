@@ -2,8 +2,10 @@ import React, {useState, useEffect, useContext, useRef} from 'react'
 import { Context } from "./Context.js"
 import axios from './axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
-
 import 'animate.css';
+import SuperInput from './SuperInput.js'
+
+
 
 const PurchaseRequest = () => {
 
@@ -77,29 +79,29 @@ const PurchaseRequest = () => {
   }
 
   const getSubcategories = async (category)=>{
-    const response = await axios.get(`/db/subList/spend_categories/subcategory/category/${category}`)
-    const data = await response.data
-
-    let subcategorySet = new Set()
-    await data.forEach(item=>{
-      subcategorySet.add(item)
-    })
-
-    let subcategoryList = [...subcategorySet]
-    setSubcategories(subcategoryList.sort())
+    try{
+      const response = await axios.get(`/db/subList/spend_categories/subcategory/category/${category}`)
+      const data = await response.data
+      let subcategorySet = new Set()
+      data.forEach(item=>{
+        subcategorySet.add(item)
+      })
+      let subcategoryList = [...subcategorySet]
+      setSubcategories(subcategoryList.sort())
+    }catch(error){
+      console.log(error)
+    }
   }
 
   const handleChange = (e)=>{
-
       const {name, value} = e.target
       let new_data = {[name]: value}
       formData = {...appData[`${page.data}`],...new_data}
       setInitialFormData(formData)
       setAppData({...appData,[`${page.data}`]:formData})
-
-      if(name=="category" && categoryRef.current.value !==""){
-        const category = categoryRef.current.value
-        getSubcategories(category)
+      if(name=="category"){
+        setSubcategories([""])
+        getSubcategories(value)
       }
   }
 
@@ -169,7 +171,7 @@ const handleReset = ()=>{
   },[])
 
 
-  const [pageClass, setPageClass] = useState("container mt-5 animate__animated animate__fadeIn animate__duration-0.5s")
+  const [pageClass, setPageClass] = useState("container mt-5 animate__animated animate__fadeIn animate__duration-0.25s")
   
 
   return (
@@ -186,65 +188,52 @@ const handleReset = ()=>{
           <form ref={formRef} name='form' id="form" onSubmit={handleSubmit} className={formClassList} noValidate>
             
             <div className="form-floating mb-3">
-              <input id = "subject" name= "subject" className="form-control form-control text-primary" value={initialFormData.subject} onChange={handleChange} placeholder="Provide a subject or headline for this request" required></input>
+              <input id = "subject" name= "subject" className="form-control text-primary" value={initialFormData.subject} onChange={handleChange} placeholder="Provide a subject or headline for this request" required></input>
               <label htmlFor="subject" className="form-label text-body-tertiary small">Summarize what you need</label>
             </div>
             
             <div className="form-floating mb-3">
-              <select 
+              <SuperInput
                 id = "supplier" 
                 name = "supplier" 
-                className="form-select text-primary" 
-                placeholder="Select a preferred supplier for this purchase"
+                list={businesses}
                 value={initialFormData.supplier}
+                valueColor="#2C7BFF"
                 onChange={handleChange} 
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {businesses.map(item=>(
-                  <option className="option light" key={businesses.indexOf(item)+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="supplier" className="form-label text-body-tertiary">Select a preferred supplier if known</label>
+                label={"Select a preferred supplier if known"}
+                required={true}
+                />
               <div className="text-secondary small"><img src={addIcon} style={iconStyle} onClick={(e)=>addSupplier(e)}></img>Add supplier</div>
-              
             </div>
 
             <div className="form-floating mb-3 has-validation">
-              <select
+              <SuperInput
                 ref={categoryRef}
                 id = "category" 
-                name="category"
-                className="form-select text-primary"
-                placeholder = "Select spend category" 
-                value={initialFormData.category}
-                onChange={handleChange}
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {categories.map(item=>(
-                  <option className="option light" key={categories.indexOf(item)+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="category" className="form-label text-body-tertiary">Select spend category</label>
+                name="category" 
+                list={categories}
+                value={initialFormData.categories}
+                valueColor="#2C7BFF"
+                onChange={handleChange} 
+                onBlur={handleChange}
+                label={"Select spend category"}
+                required={true}
+                />
             </div>
 
             {subcategories.length>0 &&
-              <div className="form-floating mb-3 has-validation animate__animated animate__slideInDown animate__duration-0.5s">
-                <select 
-                  id = "subcategory" 
-                  name="subcategory"
-                  className="form-select text-primary"
-                  placeholder = "Select spend subcategory" 
-                  value={initialFormData.subcategory}
-                  onChange={handleChange}
-                  required
-                  >
-                  <option value="" style={{color: "lightgray"}}></option>
-                  {subcategories.map(item=>(
-                    <option className="option light" key={subcategories.indexOf(item)+1}>{item}</option>
-                  ))}
-                </select>
-                <label htmlFor="subcategory" className="form-label text-body-tertiary">Select spend subcategory</label>
-              </div>
+            <div className="form-floating mb-3 has-validation animate__animated animate__slideInDown animate__duration-0.5s" style={{zIndex:99999}}>
+              <SuperInput
+                id = "subcategory" 
+                name="subcategory" 
+                list={subcategories}
+                value={initialFormData.subcategory}
+                valueColor="#2C7BFF"
+                onChange={handleChange} 
+                label={"Select spend subcategory"}
+                required={true}
+                />
+            </div>
             }
             
             
@@ -252,7 +241,7 @@ const handleReset = ()=>{
               <textarea 
                 id="details" 
                 name="details" 
-                className="form-control form-control text-primary" 
+                className="form-control form-control text-primary z-0" 
                 rows="5" style={{height:"100%"}} 
                 onChange={handleChange}
                 value={initialFormData.details}
@@ -262,7 +251,7 @@ const handleReset = ()=>{
               <label htmlFor="details" className="form-label text-body-tertiary small">Describe what you need in detail</label>
             </div>
 
-            <div className="input-group mb-3">
+            <div className="input-group mb-3 z-1">
                 <div className="input-group-text">{currencySymbol}</div>
                   <div className="form-floating">
                   <input id = "amount" name="amount" className="form-control text-primary" type = "number" value={initialFormData.amount} placeholder="Provide an estimated total cost if known" onChange={handleChange}></input>
@@ -270,7 +259,7 @@ const handleReset = ()=>{
                </div>
               </div>
     
-            <div className="d-flex flex-column justify-content-center">
+            <div className="d-flex flex-column justify-content-center z-1">
               <div className="d-flex justify-content-center">
                 <div className="btn-group">
                   <button name= "backButton" className="btn btn-outline-secondary" data-bs-toggle="button">Back</button>

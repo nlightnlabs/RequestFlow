@@ -33,7 +33,6 @@ const Home = () => {
   } = useContext(Context)
 
 
-
   const [formData, setFormData] = useState({})
 
   useEffect(()=>{
@@ -49,7 +48,7 @@ const Home = () => {
 
     let new_data = {
       requester: user,
-      request_type: selectedRequestData.name,
+      request_type: selectedRequestData.name
     }
     
     let formData = {...appData[`${page.data}`],...new_data}
@@ -62,17 +61,56 @@ const Home = () => {
     setPageName(nextPage)
   }
 
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  const updateSize = () => {
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+
+  const [boxHeight, setBoxHeight] = useState(700)
+  let updateBoxHeight = ()=>{
+    if (window.innerWidth <=600){
+      setBoxHeight("100%")
+    }else{
+      setBoxHeight(700)
+    }
+  }
+  
+  useEffect(() => {
+    // Function to update size when the window is resized
+    const handleResize = () => {
+      // updateSize();
+      updateBoxHeight();
+    };
+
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); // Empty dependency array means it only runs on mount and unmount
+
   return (
     <div className = "animate__animated animate__fadeIn animate__duration-0.5s">
+      
         <div className="container">
             <div>
               <div className="row">
                 <div className="col"></div>
-                <div className="col-lg-6">
-                <h2 className="text-left">Select a common request type</h2>
+                <div className="col-lg-6 p-0">
+                <h2 className="text-left p-3">Select a common request</h2>
+                <p>{windowSize.width}</p>
                 <div className="=flex-fill shadow shadow-lg rounded-top-2" style={{backgroundImage: "linear-gradient(45deg, rgb(9, 128, 243), rgb(0, 223, 255))", height:25}}></div>
-                  <div className="d-flex bg-light shadow border border-1 rounded-bottom-2 p-3 flex-column justify-content-center">
-                    <div className="flex-fill bg-white flex-column" style={{height:700, overflowY:"scroll"}}>
+                  <div className="d-flex bg-light shadow border border-1 rounded-bottom-2 p-0 flex-column justify-content-center">
+                    <div className="flex-fill bg-white flex-column overflow-y-scroll" style={{height:boxHeight}}>
                     {requestTypes.map((item, index)=>(
                             <div key={index} id={item.name} className="d-flex border border-1 border-light shadow shadow-sm p-3" style={{cursor: "pointer", zIndex:7}} onClick={(e)=>handleSelect(e)}>
                               <img src={item.icon || "other_request_icon.png"} alt={`${item.name} icon`} style={{maxHeight: 50, maxWidth: 50}}></img>

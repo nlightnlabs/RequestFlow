@@ -30,11 +30,10 @@ const Login = () => {
   } = useContext(Context)
 
   useEffect(()=>{
-    console.log(appData)
-    setPage(pages.filter(x=>x.name===pageName)[0])
-    console.log(page)
-    setPageList([...pageList,pageName])
-    console.log(pageList)
+    setAppData({})
+    setPageName("Log In")
+    setPage(pages.filter(x=>x.name==="Log In")[0])
+    setPageList(['Log In'])
 },[])
 
   let formData = {}

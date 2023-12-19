@@ -2,8 +2,9 @@ import React, {useState, useEffect, useContext, useRef, createRef} from 'react'
 import { Context } from "./Context.js"
 import axios from './axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
-
 import 'animate.css';
+import SuperInput from './SuperInput.js'
+
 
 const Budget = () => {
 
@@ -215,21 +216,17 @@ const handleReset = ()=>{
               <label htmlFor="subject" className="form-label text-body-tertiary small">Provide a subject name for this budget request</label>
             </div>
 
-            <div className="form-floating mb-3 has-validation">
-              <select 
+            <div className="form-floating mb-3">
+              <SuperInput
                 id = "business_unit" 
                 name="business_unit"
-                className="form-select text-primary"
-                placeholder = "Select a product that is needed" 
+                list={businessUnits}
                 value={initialFormData.business_unit}
-                onChange={handleChange}
-                required>
-                <option value="" style={{color: "lightgray"}}></option>
-                {businessUnits.map((item, index)=>(
-                  <option className="option light" key={index+1}>{item}</option>
-                ))}
-              </select>
-              <label htmlFor="category" className="form-label text-body-tertiary">What business unit is this for?</label>
+                valueColor="#2C7BFF"
+                onChange={handleChange} 
+                label={"Select the business unit for this budget"}
+                required={true}
+                />
             </div>
 
             <div className="form-group mb-3">
