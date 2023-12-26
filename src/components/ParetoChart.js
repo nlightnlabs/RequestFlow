@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from './axios';
+import axios from './apis/axios.js'
 import * as d3 from 'd3';
 import "bootstrap/dist/css/bootstrap.min.css"
 
@@ -8,7 +8,7 @@ const ParetoChart = (props) => {
 
   const svgRef = useRef();
 
-    const chartWidth = props.chartWidth || 500
+    const chartWidth = props.chartWidth || 600
     const chartHeight = props.chartHeight || 300
     const tableName = props.tableName || ""
     const chartTitle = props.chartTitle || ""
@@ -31,25 +31,6 @@ const ParetoChart = (props) => {
     const [barData, setBarData] = useState([])
     const [lineData, setLineData] = useState([])
 
-    // const barData = [
-    //   { label: 'Category A', value: 90 },
-    //   { label: 'Category B', value: 80 },
-    //   { label: 'Category C', value: 65 },
-    //   { label: 'Category D', value: 50 },
-    //   { label: 'Category E', value: 30 },
-    //   { label: 'Category F', value: 20 },
-    //   { label: 'Category G', value: 10 }
-    // ]; // Example data for the bar chart
-  
-    // const lineData = [
-    //   { label: 'Category A', value: 30 },
-    //   { label: 'Category B', value: 50 },
-    //   { label: 'Category C', value: 78 },
-    //   { label: 'Category D', value: 80 },
-    //   { label: 'Category E', value: 90 },
-    //   { label: 'Category F', value: 95 },
-    //   { label: 'Category G', value: 100 }
-    // ];
 
     const getData = async (req, res)=>{
 
@@ -76,7 +57,6 @@ const ParetoChart = (props) => {
               total += parseFloat(item.value)
             })
 
-          console.log(total)
 
           // Additional fields needed for pareto chart
             var pareto_data =[]
@@ -91,7 +71,6 @@ const ParetoChart = (props) => {
               pareto_data.push(updated_item)
             })
 
-          console.log(pareto_data)
 
           let barData = []
           pareto_data.map((item)=>{
@@ -118,11 +97,6 @@ const ParetoChart = (props) => {
 
     if (!barData || !lineData) return;
 
-    console.log(barData)
-    console.log(lineData)
-
-    console.log(lineData.map(item=>item))
-
     const svg = d3.select(svgRef.current);
 
     // Clear existing chart
@@ -131,6 +105,7 @@ const ParetoChart = (props) => {
     const margin = { top: 10, right: 0, bottom: bottomMargin, left: 50 };
     const width = chartWidth - margin.left - margin.right;
     const height = chartHeight - margin.top - margin.bottom;
+
 
     // Create the left y-axis for the bar chart
     const yBar = d3.scaleLinear()
@@ -150,25 +125,39 @@ const ParetoChart = (props) => {
     const xAxis = g => g
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x));
-      
-
+    
     const yAxisLeft = g => g
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(yBar));
-
-    const yAxisRight = g => g
-      .attr('transform', `translate(${width - margin.right},0)`)
-      .call(d3.axisRight(yLine));
 
     svg.append('g').call(yAxisLeft)
       .selectAll('.tick line')
       .attr('stroke-opacity', 0.2);
 
-    svg.append('g').call(yAxisRight)
-      .selectAll('.tick line')
-      .attr('stroke-opacity', 0.1);
+       // const yAxisRight = g => g
+    //   .attr('transform', `translate(${width - margin.right},0)`)
+    //   .call(d3.axisRight(yLine));
 
-    // Create bars for the bar chart on the left y-axis
+    // svg.append('g').call(yAxisRight)
+    //   .selectAll('.tick line')
+    //   .attr('stroke-opacity', 0.1);
+
+    const xScale = d3.scaleBand()
+      .domain(barData.map(d => d.label))
+      .range([0, chartWidth])
+      .padding(0.1);
+
+      const yScale = d3.scaleBand()
+      .domain(barData.map(d => d.value))
+      .range([0, chartHeight])
+      .padding(0.1);
+
+    svg.selectAll('text')
+      .style('font-family', 'Arial')
+      .style('font-size', '12px')
+      .style('font-weight', 'normal')
+      .style('color',"gray");
+
     svg.selectAll('.bar')
       .data(barData)
       .enter().append('rect')
@@ -178,6 +167,17 @@ const ParetoChart = (props) => {
       .attr('width', x.bandwidth())
       .attr('height', d => height - yBar(d.value))
       .attr('fill', fillColor);
+      
+    svg.selectAll('.bar')
+      .data(barData)
+      .enter().append("text")
+      .text(d => d.value) // Set the label text to the value of the data point
+      .attr("x", d => xScale(d.label) + xScale.bandwidth() / 2) // Position text at the center of each bar on the x-axis
+      .attr("y", d => yScale(d.value) - 5) // Adjust the y-coordinate for positioning above the bar (change as needed)
+      .attr("text-anchor", "middle") // Center the text horizontally
+      .style("font-size", "24px") // Adjust font size as needed
+      .style("fill", "black"); // Set text color
+
 
     // Create line plot on the right y-axis
     const line = d3.line()
@@ -198,10 +198,7 @@ const ParetoChart = (props) => {
     // .attr("transform", `rotate(${xAxisLabelRotation})`)
     .attr("dy", ".35em");
 
-      const xScale = d3.scaleBand()
-      .domain(barData.map(d => d.label))
-      .range([0, chartWidth])
-      .padding(0.1);
+      
     
       const xAxisGroup = svg.append("g")
         .attr("transform", `translate(0, ${height - margin.bottom})`)
@@ -240,16 +237,11 @@ const ParetoChart = (props) => {
     xAxisGroup.selectAll("text")
     .call(wrap, xAxisLabelWrapWidth || xScale.bandwidth()) // Adjust the width for wrapping
     .attr("transform", `translate(${xAxisXTextOffset}, ${xAxisYTextOffset}), rotate(${xAxisLabelRotation})`)
-    .style("text-anchor", `${xAxisTextAnchor}`)
-
-
-    
-
+    .style("text-anchor", `${xAxisTextAnchor}`);
+      
   }
 
   
-
-
   useEffect(() => {
     getData()
   }, [props]);
@@ -282,7 +274,7 @@ const ParetoChart = (props) => {
   }
 
   return (
-    <div className="d-flex flex-column justify-content-center p-3">
+    <div className="d-flex flex-column justify-content-center p-3" style={{maxWidth: chartWidth, overflowX: 'auto'}}>
 
       {chartTitle && <div style={titleStyle}>{chartTitle}</div>}
       

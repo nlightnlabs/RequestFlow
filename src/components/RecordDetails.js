@@ -1,103 +1,128 @@
-import React, {useState, useContext, useEffect, useRef, createRef} from 'react';
+import React, {useState, useEffect} from 'react'
+import Workflow from './Workflow'
+import Form from './Form'
+import Activities from './Activities'
+import { generalIcons } from './apis/icons'
+import {deleteRecord, getRecord, getRecords, getData, getTable} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
-import {toProperCase} from "./formatValue.js"
-
-const List = ({data}) => {
-
-  const headers = Object.keys(data[0]);
-  const [showRecord, setShowRecord] = useState(false)
-
-  const dataRefs = useRef([]);
-  dataRefs.current = headers.map(
-      (ref, index) =>   dataRefs.current[index] = createRef(index)
-    )
 
 
-  const handleRecordSelect=()=>{
-      setShowRecord(!showRecord)
-    }
+const RecordDetails = (props) => {
 
-    const handleChange=()=>{
-      
-    }
+    const tableName = props.tableName || ""
+    const recordId = props.recordId || ""
+    const userData = props.userData ||[]
+    const tableData = props.tableData || []
+    const refreshTable = props.refreshTable
 
-const cardClassName="d-flex flex-column border border-1 rounded rounded-3 p-3 shadow-sm mb-3 bg-white" 
-const tableClassNameStyle="table table-borderless p-0"
-const tdClassName="p-1 m-0"
+    const setShowRecordDetails = props.setShowRecordDetails
+    const [recordData, setRecordData] = useState([])
+    const [fields, setFields] = useState([])
+    const [activities, setActivities] = useState([])
 
-const [tdLabelStyle, settdlabelStyle]=useState({
-  fontSize:12,
-  color: "gray"
-})
-
-
-const [cardStyle, setCardStyle]=useState({
-    fontSize: 12,
-    backgroundColor: "white"
-})
-
-const [tdValueStyle, settdValueStyle]=useState({
-  fontSize:12
-})
-
-const styleLabel=(col, col_index, currentStyle)=>{
-  if (col_index ==0){
-    return {...currentStyle,...{fontSize: 18, fontWeight: 'bold', color: 'black'}}
-  }
-  if (col_index ==1){
-    return {...currentStyle,...{fontSize: 16}}
-  }
-  if (col_index ==2){
-      return {...currentStyle,...{fontWeight: 'bold'}}
-  }else{
-    return tdLabelStyle
-  }
-}
-
-const styleValue=(col, value, col_index, currentStyle)=>{
-  if (col_index ==0){
-    return {...currentStyle,...{fontSize: 18, fontWeight: 'bold'}}
-  }
-  if (col_index ==1){
-    return {...currentStyle,...{fontSize: 16}}
-  }
-  if (col_index ==2){
-      return {...currentStyle,...{color: 'blue', fontWeight: 'bold'}}
-  }
-  if(value==="Open" && col==="status"){
-      return {...currentStyle,...{color: 'green', fontWeight: 'bold'}}
-  }
-  else{
-    return tdValueStyle
-  }
-}
-
-useEffect(()=>{
-},[])
-  
-return (
-  <div>
-      {
-          data.map((row,row_index)=>(
-          <div className={cardClassName} key={row_index} id={row.id} name={row.id} onClick={handleRecordSelect}>
-            <table className={tableClassNameStyle}>
-              <tbody>
-              {
-                Object.keys(row).map((col,col_index)=>(
-                  <tr key={col_index}>
-                      <td ref={dataRefs[`${col}_${col_index}_label`]} className={tdClassName} style={styleLabel(col, col_index,tdLabelStyle)} htmlFor={col}>{toProperCase(col.replaceAll("_"," "))}: </td>
-                      <td ref={dataRefs[`${col}_${col_index}_value`]} className={tdClassName} style={styleValue(col, row[col], col_index,tdValueStyle)}>{row[col]}</td>
-                  </tr>
-                ))
-                }
-                </tbody>
-            </table>
-              
-          </div>
-          ))
+    const getRecordData = async ()=>{
+        const params={
+            tableName,
+            recordId,
+            idField: 'id'
+        }
+        const returnedData = await getRecord(params)
+        console.log(returnedData)
+        setRecordData(returnedData)
+        setFields(Object.keys(returnedData))
       }
-      </div>
+
+      const getActivityData = async ()=>{
+        const query = `SELECT A.*, B.first_name, B.last_name from activities as A left join users as B on A.user = B.email where "record_id"='${recordId}' and "app" = '${tableName}' order by "created" desc;`
+        const returnedData = await getData(query)
+        setActivities(returnedData)
+      }
+
+      useEffect(()=>{
+        getRecordData()
+        getActivityData()
+      },[props])
+
+
+    const handleRecordDetailForm = (e)=>{
+
+        if(e.target.name == "closeButton"){
+            setShowRecordDetails(false)
+
+        }else if(e.target.name == "trashButton"){
+
+            alert("Please confirm you want to delete this record")
+
+            const params = {
+                tableName,
+                idField: 'id',
+                recordId
+            }
+            const deleteRespponse = deleteRecord(params)
+            console.log(deleteRespponse)
+            setShowRecordDetails(false)
+
+             //Refreshes the table in the UI
+            const updateTable = async (req, res)=>{
+                const response = await getTable(tableName)
+                refreshTable(response.sort((a, b) => {
+                return  b.id-a.id;
+                }));
+            }
+            updateTable()
+
+        }else{
+            return
+        }
+    }
+
+  return (
+    <div className="flex-container" style={{height: "100%", overflow: "hidden"}}>
+        <div className="row">
+            <div className="d-flex justify-content-between mb-3">
+                {userData.role!=="Individual" && <div className="d-flex justify-content-end">
+                    <div className="button-group justify-content-between">
+                        <button className="btn btn-primary m-1" name="approveButton" onClick={(e)=>{handleRecordDetailForm(e)}}>Approve</button>
+                        <button className="btn btn-danger m-1" name="denyButton" onClick={(e)=>{handleRecordDetailForm(e)}}>Deny</button>
+                    </div>
+                </div>}
+                <div className="d-flex justify-content-end">
+                    <div className="button-group">
+                        <img src={`${generalIcons}/trash_icon.png`} className="icon-button" name="trashButton" onClick={(e)=>{handleRecordDetailForm(e)}}></img>
+                        <img src={`${generalIcons}/close_icon.png`} className="icon-button"  name="closeButton" onClick={(e)=>{handleRecordDetailForm(e)}}></img>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className="row">
+            <Workflow/>
+        </div>
+        <div className="row">
+            <div className="col-6 p-3">
+                <Form
+                    tableName={tableName}
+                    recordId={recordId}
+                    formData={recordData}
+                    fields = {fields}
+                    userData={userData}
+                    updateActivitiesOnSave = {true}
+                    updateRecord = {setRecordData}
+                    refreshActivities = {setActivities}
+                    refreshTable = {refreshTable}
+                />
+             </div>
+            
+            <div className="col-6 p-3">
+                <Activities
+                    tableName={tableName}
+                    recordId={recordId}
+                    userData={userData}
+                    activities={activities}
+                />
+            </div>
+        </div>
+        </div>
   )
 }
 
-export default List
+export default RecordDetails

@@ -39,7 +39,7 @@ const SuperInput = forwardRef((props, ref) => {
 
         const [options, setOptions] = useState([])
         const getOptions = ()=>{
-          if(props.list && props.list.length>0 && options.length ==0){
+          if(props.list && props.list.length>0){
             setOptions(props.list.filter(e=>e))
           }
         }
@@ -121,7 +121,7 @@ const SuperInput = forwardRef((props, ref) => {
           setValue(value)
           setSelectedIndex(selectedIndex)
           setDropDownDisplay("none")
-          handleChange(value)
+          handleChange()
         }
       
         const handleOptionHover = (event)=>{
@@ -144,7 +144,7 @@ const SuperInput = forwardRef((props, ref) => {
           }
         }
       
-        const handleChange=(value)=>{
+        const handleChange=()=>{
 
           if(typeof onChange =="function"){
             target = {
@@ -179,14 +179,13 @@ const SuperInput = forwardRef((props, ref) => {
 
           if(list.length>0){
             // filter the options based on the text user has inputted
-            if(inputText.length>0){
-              console.log(inputText.length)
+            if((inputText).length>0){
               setOptions(options.filter(item=>item.toLowerCase().includes((inputText).toLowerCase())))
             }else{
               setOptions(props.list.filter(e=>e))
             }
           }
-          handleChange(inputText)
+          handleChange()
         }
 
         useEffect(()=>{
@@ -235,8 +234,7 @@ const SuperInput = forwardRef((props, ref) => {
                   </input>
                 </div>
               }
-               {props.list && 
-                  <div style={dropDownStyle}>
+               {props.list && <div style={dropDownStyle}>
                     {options.map((item,index)=>(
                       <div
                         key={index}

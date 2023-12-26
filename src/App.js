@@ -73,7 +73,8 @@ function App() {
     {name: "Requests", component: <Requests/>, data: "request_page_settings", request_type: false, description: "Dashboard for all requets",icon:`${icons}/requests_icon.png`},
     {name: "Add Business", component: <AddBusiness/>, data: "new_business_data", request_type: false, description: "Description for this request",icon:`${icons}/add_business.png`},
     {name: "Add Product", component: <AddProduct/>, data: "new_product_data", request_type: false, description: "Description for this request",icon:`${icons}/add_product.png`},
-    {name: "Test", component: <Test/>, data: "test_data", request_type: false, description: "Description for this request",icon:`${icons}/test.png`}
+    {name: "Test", component: <Test/>, data: "test_data", request_type: false, description: "Description for this request",icon:`${icons}/test.png`},
+    {name: "Landing Page", component: <LandingPage/>, data: "test_data", request_type: false, description: "Description for this request",icon:`${icons}/home.png`}
   ]
 
 
@@ -107,7 +108,7 @@ function App() {
     backgroundSize: "cover",
     backgroundImage: "linear-gradient(0deg, rgb(220, 230, 255), rgb(245, 250, 255), white)",
     height: "100vh",
-    overflow: "auto"
+    overflow: "hidden"
   }
  
   return (
@@ -126,7 +127,9 @@ function App() {
 
         {userLoggedIn && 
           <>
-          <Header/>
+          <div style={{position: "relative", zIndex: 99999}}>
+            <Header/>
+          </div>
           <>{pages.filter(x=>x.name===pageName)[0].component}</>
           </>
         }

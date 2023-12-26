@@ -24,5 +24,55 @@
 .color-lightgray {color: rgba(217,217,217,1);}
 .color-lightblue {color: rgba(157,195,230,1);}
 
+.body{
+    display: flex;
+}
 
-	
+.icon {
+    max-height: 40px;
+    max-width: 40px;
+}
+
+.icon-button {
+    max-height: 40px;
+    max-width: 40px;
+    cursor: pointer;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border: 1px solid lightgray;
+    box-shadow: 5px 5px 15px lightgray;
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
+
+}
+
+
+
+@media( width <= 1000){
+    .panel{
+        border-radius: 0px;
+        box-shadow: none;
+    }
+}
+
+.icon {
+    max-width: 30px;
+    max-height: 30px;
+}
+
+
+.grid{
+    display: grid;
+    width: 100%;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px,1fr));
+}
+
+::placeholder{
+    color: rgba(200,200,200,1)
+}

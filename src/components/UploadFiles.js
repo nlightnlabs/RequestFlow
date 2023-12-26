@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react'
 import {Context} from './Context.js'
-import axios from './axios.js'
+import axios from './apis/axios.js'
 import fileServer from "./fileServer.js"
 
 const Upload = (e) => {

@@ -1,4 +1,4 @@
-import axios from './axios.js'
+import axios from './apis/axios.js'
 
 const updateActivity = async (req,res)=>{
 

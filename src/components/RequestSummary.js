@@ -4,7 +4,7 @@ import { Context } from "./Context.js"
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import SuccessIcon from './success_icon.svg';
-import {toProperCase} from './formatValue.js'
+import {toProperCase} from './functions/formatValue.js'
 import updateActivity from './updateActivity.js';
 
 const RequestSummary = () => {

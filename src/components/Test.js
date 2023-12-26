@@ -1,9 +1,15 @@
 import React from 'react'
 
 const Test = () => {
+
+
+ const headerStyle = {}
+
+  
   return (
-    <div>
-      <a href="https://www.espn.com">Link</a>
+    <div className="flex-container">
+      <div className="flex flex-column" style={headerStyle}></div>
+      
     </div>
   )
 }

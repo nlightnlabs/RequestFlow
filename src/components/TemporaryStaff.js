@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext, useRef, createRef} from 'react'
 import { Context } from "./Context.js"
-import axios from './axios.js'
+import axios from './apis/axios.js'
 import 'animate.css';
 import "bootstrap/dist/css/bootstrap.min.css"
 import SuperInput from './SuperInput.js'

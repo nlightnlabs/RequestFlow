@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useContext, useRef, createRef} from 'react'
 import { Context } from "./Context.js"
-import axios from './axios.js'
-import fileServer from './fileServer.js'
+import axios from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 import 'animate.css';
@@ -134,7 +133,7 @@ const AddProduct = () => {
       const uploadFiles = async (req, res)=>{
 
         //get secure url from our server
-        const response = await fileServer.post(`/getS3FolderUrl`,{filePath: filePath})
+        const response = await axios.post(`/getS3FolderUrl`,{filePath: filePath})
 
         const url = await response.data
         // console.log(url)
