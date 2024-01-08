@@ -1,8 +1,9 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
 import {ContextProvider, Context } from './Context';
 import "bootstrap/dist/css/bootstrap.min.css"
-import {getData} from './apis/axios.js'
+import {getData, getTable} from './apis/axios.js'
 import { toProperCase } from './functions/formatValue.js';
+import { appIcons, generalIcons } from './apis/icons.js';
 
 const Header = () => {
 
@@ -30,7 +31,11 @@ const Header = () => {
       tables,
       setTables,
       tableName,
-      setTableName
+      setTableName,
+      apps,
+      setApps,
+      selectedApp,
+      setSelectedApp
       } = useContext(Context)
 
     
@@ -53,29 +58,27 @@ const Header = () => {
       }
     }
 
-    const getTableList = async ()=>{
-      const query=`SELECT table_name FROM information_schema.tables where table_schema = 'public';`
-      const tableDataResponse = await getData(query)
-      console.log(tableDataResponse)
-      setTables(tableDataResponse)
+    const getApps = async ()=>{
+        const response = await getTable("apps")
+        console.log(response)
+        setApps(response.data)
     }
 
     useEffect(()=>{
       initializeUserData()
-      getTableList()
+      getApps()
     },[appData, userLoggedIn])
 
-    const homeIcon = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/icons/home_icon.png"
+    const homeIcon = `${generalIcons}/home_icon.png`
+    const menuIcon = `${generalIcons}/menu_icon.png`
+    const gptIcon = `${generalIcons}/gpt_icon.png`
 
-    const menuIcon = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/icons/menu_icon.png"
     const iconStyle = {
         maxHeight: 50,
     cursor: "pointer"
     }
 
   const handleMenuOption=(elem)=>{
-
-    console.log(pageList)
     
     if(elem == "newRequestButton"){
       let nextPage = "Home"
@@ -101,6 +104,12 @@ const Header = () => {
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
     }
+    if(elem == "gptButton"){
+      let nextPage = "GPT"
+      setPageList([nextPage])
+      setPage(pages.filter(x=>x.name===nextPage)[0])
+      setPageName(nextPage)
+    }
     if(elem == "signOutButton"){
       let nextPage = "Log In"
       setPageList([nextPage])
@@ -114,6 +123,15 @@ const Header = () => {
       setUserLoggedIn(false)
       setPageName(nextPage)
     }
+  }
+
+  const handleAppOption=(app)=>{
+      setSelectedApp(app.name)
+      setTableName(app.db_table)
+      let nextPage = app.default_component
+      setPageList([nextPage])
+      setPage(pages.filter(x=>x.name===nextPage)[0])
+      setPageName(nextPage)
   }
 
   const topBarStyle={
@@ -148,11 +166,12 @@ const Header = () => {
     right: 0, 
     overflowY: "auto", 
     top: topBarStyle.height, 
-    height: windowDimensions.height-topBarStyle.height-20
+    height: windowDimensions.height-topBarStyle.height-1,
+    backgroundColor: "#9DC3E6",
   }
 
   return (
-            <div ref={topBarRef} className="d-flex bg-light justify-content-end" style={topBarStyle}>
+            <div ref={topBarRef} className="d-flex bg-white justify-content-end" style={topBarStyle}>
               {userLoggedIn && 
               <div className="d-flex flex-column p-2">
                 <span className="text-secondary" style={{fontSize:12}}>Hello</span>
@@ -162,7 +181,7 @@ const Header = () => {
               <div className="p-1"><img src={menuIcon} style={iconStyle} onClick={()=>setShowUserOptions(!showUserOptions)}></img></div>
 
               {showUserOptions &&
-              <div className="d-flex position-absolute flex-column bg-white border border-1 rounded rounded-3 shadow shadow p-3" 
+              <div className="d-flex position-absolute flex-column border border-1 rounded rounded-3 shadow shadow p-3" 
               style={menuStyle}
               onMouseLeave={()=>setShowUserOptions(false)}
               >
@@ -177,10 +196,15 @@ const Header = () => {
                     <button id="signOutButton" name="signOutButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Sign out</button>
                 </div>
 
-                <div className="d-flex flex-column flex-wrap mb-3 border-top-1">
-                    <button id="allRequestsButton" name="allRequestsButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>All Requests</button>
-                    <button id ="updateButton" name="updateButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Update Profile</button>
-                    <button id="signOutButton" name="signOutButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Sign out</button>
+                <div className="d-flex flex-column flex-wrap mb-3 border-top-1 ">
+                  {apps.map((app,index)=>(
+                      <button key={index} id={app.name} name={app.name} className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleAppOption(app)}>
+                        <div className="d-flex justify-content-start">
+                          <img src={`${appIcons}/${app.icon_url}`} style={{height: 25, width: 25, marginRight: 10}}></img>
+                          {app.label}
+                        </div>
+                      </button>
+                  ))}
                 </div>
                     
                 </div>

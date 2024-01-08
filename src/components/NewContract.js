@@ -45,7 +45,7 @@ const NewContract = () => {
 
   const getBusinessData = async ()=>{
     const response = await axios.get("/db/table/businesses")
-    const data = await response.data
+    const data = await response.data.data
     setBusinessData(data)
 
     let businessseSet = new Set()
@@ -60,7 +60,7 @@ const NewContract = () => {
 
   const getCategories = async ()=>{
     const response = await axios.get("/db/table/contract_types")
-    const data = await response.data
+    const data = await response.data.data
     setCategoryData(data)
 
     let categorySet = new Set()

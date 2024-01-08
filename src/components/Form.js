@@ -175,14 +175,14 @@ const Form = (props) => {
                         id={field}
                         label={toProperCase(field.replaceAll("_"," "))}
                         name={field}
-                        value={field=="created"? (new Date(recordData[field])).toLocaleDateString('en-US') :recordData[field]}
+                        value={field=="record_created"? (new Date(recordData[field])).toLocaleDateString('en-US') :recordData[field]}
                         valueColor={valueColor}
                         fill={inputFill}
                         border={border}
                         padding={0}
                         onChange={handleChange}
-                        readonly = {field=='id' || field=='id' == 'created' || !allowEdit}
-                        disabled = {field=='id' || field=='id' == 'created' || !allowEdit}
+                        readonly = {field=='id' || field== 'record_created' || !allowEdit}
+                        disabled = {field=='id' || field== 'record_created' || !allowEdit}
                     />
                 </div>
             ))}

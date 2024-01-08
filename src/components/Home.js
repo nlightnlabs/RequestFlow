@@ -36,9 +36,9 @@ const Home = () => {
   const [formData, setFormData] = useState({})
 
   useEffect(()=>{
-    console.log(appData)
-    console.log(page)
-    console.log(pageList)
+    //console.log(appData)
+    //console.log(page)
+    //console.log(pageList)
 },[])
 
   const handleSelect=(e)=>{
@@ -52,7 +52,7 @@ const Home = () => {
     }
     
     let formData = {...appData[`${page.data}`],...new_data}
-    console.log({...appData,[`${page.data}`]:formData})
+    //console.log({...appData,[`${page.data}`]:formData})
     setAppData({...appData,[`${page.data}`]:formData})
     
     const nextPage = seletectedRequest

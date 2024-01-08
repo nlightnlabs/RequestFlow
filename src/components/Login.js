@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useContext, useRef} from 'react'
+import { useNavigate } from 'react-router'
 import { Context } from "./Context.js"
 import axios from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -37,6 +38,8 @@ const Login = () => {
 },[])
 
   let formData = {}
+  const navigate = useNavigate()
+
   const [formClassList, setFormClassList] = useState("form-group")
   const formRef = useRef()
   const [logInErrorMsg, setLogInErrorMsg] = useState("")
@@ -58,6 +61,7 @@ const Login = () => {
     
     e.preventDefault()
     const form = e.target
+
     const validateUser = async(req, res)=>{
       if(Object.keys(appData)==0){
         let formData = {...appData[`${page.data}`],...{}}
@@ -66,7 +70,7 @@ const Login = () => {
         setLogInClassName("text-danger mt-0 mb-3 animate__animated animate__fadeIn ")
       }
       else{
-        console.log(appData)
+        // console.log(appData)
         const params = {
             email: appData.user_info.email,
             pwd: appData.user_info.pwd
@@ -111,6 +115,12 @@ const Login = () => {
       setPageList([...pageList,nextPage])
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
+    }else if(e.nativeEvent.submitter.name==="forgot_password"){
+      setFormClassList("form-group")
+      let nextPage = "Forgot Password"
+      setPageList([...pageList,nextPage])
+      setPage(pages.filter(x=>x.name===nextPage)[0])
+      setPageName(nextPage)
     }else{
       if(!form.checkValidity()){
         e.preventDefault();
@@ -132,9 +142,6 @@ const Login = () => {
       }
     }
 }
-
-
-
 
   const [pageClass, setPageClass] = useState("container mt-5 animate__animated animate__fadeIn animate__duration-0.5s")
   
@@ -166,7 +173,8 @@ const Login = () => {
               <div className="d-flex justify-content-center">
                 <div className="d-flex flex-column">
                     <button id = "login_in" name="log_in"  className="btn btn-primary" data-bs-toggle="button" type="submit">Log In</button>
-                    <button id = "sign_up" name="sign_up"  className="btn btn-light" data-bs-toggle="button" type="submit">Sign Up</button>
+                    <button id = "sign_up" name="sign_up"  className="btn text-secondary" data-bs-toggle="button" type="submit">Sign Up</button>
+                    <button id = "forgot_password" name="forgot_password"  className="btn text-secondary" data-bs-toggle="button" type="submit">Forgot Password</button>
                 </div>
               </div>
             </div>

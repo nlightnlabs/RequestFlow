@@ -49,7 +49,7 @@ const AddProduct = () => {
 
   const getCategories = async ()=>{
     const response = await axios.get('/db/table/spend_categories')
-    const data = await response.data
+    const data = await response.data.data
     setCategoryData(data)
 
     let categorySet = new Set()
@@ -64,7 +64,7 @@ const AddProduct = () => {
 
   const getSubcategories = async (category)=>{
     const response = await axios.get(`/db/subList/spend_categories/subcategory/category/${category}`)
-    const data = await response.data
+    const data = await response.data.data
 
     let subcategorySet = new Set()
     await data.forEach(item=>{
@@ -78,7 +78,7 @@ const AddProduct = () => {
 
   const getBusinesses = async ()=>{
     const response = await axios.get('/db/list/data/getTable/businesses')
-    const data = await response.data
+    const data = await response.data.data
     setBusinessData(data)
 
     let businessSet = new Set()
@@ -93,7 +93,7 @@ const AddProduct = () => {
 
   const getUnitsOfMeasures = async ()=>{
     const response = await axios.get('/db/table/units_of_measures')
-    const data = await response.data
+    const data = await response.data.data
     setUnitOfMeasuresData(data)
 
     let uomSet = new Set()
@@ -135,7 +135,7 @@ const AddProduct = () => {
         //get secure url from our server
         const response = await axios.post(`/getS3FolderUrl`,{filePath: filePath})
 
-        const url = await response.data
+        const url = await response.data.data
         // console.log(url)
 
         const fileURL = await url.split('?')[0]
@@ -208,7 +208,7 @@ const handleSubmit =async (e)=>{
         }
         try{
             const response = await axios.post("/db/addRecord",{params})
-            const responseData = await response.data
+            const responseData = await response.data.data
             console.log(response)
             if(response.statusText=="OK"){
               alert("Business has been added.  Thank you.")

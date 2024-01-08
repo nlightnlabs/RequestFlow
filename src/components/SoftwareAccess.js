@@ -66,7 +66,7 @@ const SoftwareAccess = () => {
 
   const getProducts = async ()=>{
     const response = await axios.get('/db/table/products')
-    const data = await response.data
+    const data = await response.data.data
     setProductData(data)
 
     let productSet = new Set()

@@ -10,3 +10,11 @@ export const UTCToLocalTime =(utcDateString)=>{
 //   console.log('UTC Time:', utcTimeString);
 //   console.log('Local Time:', localTime);
 
+
+export const UTCToLocalDate =(utcDateString)=>{
+  const utcDate = new Date(utcDateString);
+  const timezoneOffset = utcDate.getTimezoneOffset();
+  const localTime = new Date(utcDate.getTime() - timezoneOffset * 60000);
+  return localTime.toLocaleString().slice(0,localTime.toLocaleString().search(",")); // Adjust the output format as needed
+}
+

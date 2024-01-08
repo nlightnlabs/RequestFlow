@@ -4,7 +4,6 @@ import { generalIcons } from './apis/icons'
 
 const StatusListBox = (props) => {
 
-    
     const title = props.title
 
     //Data must have three fields: subject, status, and timestamp
@@ -51,7 +50,7 @@ const StatusListBox = (props) => {
             const color = colors.filter(item=>item.status ===status)[0].color
             return color
         }catch(error){
-            console.log(status)
+            // console.log(status)
             return "gray"
         }
     }
@@ -108,7 +107,8 @@ const StatusListBox = (props) => {
     const statusStyle={
         display: "flex", 
         width: "30%", 
-        justifyContent: "end"
+        justifyContent: "end",
+        fontSize: "12px"
     }
 
     const filterWindowStyle={
@@ -140,19 +140,19 @@ const StatusListBox = (props) => {
     <div style={containerStyle}>
 
     {/* Header */}
-    <div style={headerStyle}>
+    {/* <div style={headerStyle}>
         <h4 style={titleColor}>{title}</h4>
         <div style={headerButtonGroupStyle}>
             <img src={`${generalIcons}/filter_icon.png`} alt="filter" style={iconStyle} onClick={(e)=>handleFilter(e)}/>
             <img src={`${generalIcons}/sort_icon.png`} alt="sort" style={iconStyle} onClick={(e)=>handleSort(e)}/>
         </div>
-    </div>
+    </div> */}
 
 
     {/* List Box */}
     <div style={listBoxStyle}>
         {data.map((item,index)=>(
-        <div key={index} style={{display: "flex", flexDirection: "column", width: "100%"}}>
+        <div key={index} style={{display: "flex", flexDirection: "column", width: "100%", cursor: "pointer"}}>
             { listType == "action"?
                 <div style={{...listItemStyle,...{marginBottom: 10}}}>
                     <div style={{width: "70%"}}>{item.subject}</div>
@@ -163,8 +163,8 @@ const StatusListBox = (props) => {
                 :
                 <>
                 <div style={listItemStyle}>
-                    <div style={{width: "55%"}}>{item.subject}</div>
-                    <div style={{...statusStyle,...{color: getColor(item.status)}}}>{item.status}</div>
+                    <div style={{width: "55%", fontSize: "12px"}}>{item.subject}</div>
+                    <div style={{...statusStyle,...{color: getColor(item.stage)}}}>{item.stage}</div>
                 </div>
                 <div style={timeStampStyle}>{item.timestamp}</div>
                 </>

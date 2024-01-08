@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import SuperInput from './SuperInput.js'
 
-const Sourcing = () => {
+const SourcingRequest = () => {
 
   const {
     user,
@@ -66,7 +66,7 @@ let formData = {}
 
     try{
       const response = await axios.get('/db/table/spend_categories')
-      const data = await response.data
+      const data = await response.data.data
       setCategoryData(data)
   
       let categorySet = new Set()
@@ -303,4 +303,4 @@ const handleReset = ()=>{
   )
 }
 
-export default Sourcing
+export default SourcingRequest

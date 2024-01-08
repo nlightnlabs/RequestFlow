@@ -97,3 +97,18 @@ export const toProperCase = (str)=>{
    .map(w => w[0].toUpperCase() + w.substring(1).toLowerCase())
    .join(" ");
 }
+
+
+export const UTCToLocalTime =(utcDateString)=>{
+  const utcDate = new Date(utcDateString);
+  const timezoneOffset = utcDate.getTimezoneOffset();
+  const localTime = new Date(utcDate.getTime() - timezoneOffset * 60000);
+  return localTime.toLocaleString(); // Adjust the output format as needed
+}
+
+export const UTCToLocalDate =(utcDateString)=>{
+  const utcDate = new Date(utcDateString);
+  const timezoneOffset = utcDate.getTimezoneOffset();
+  const localTime = new Date(utcDate.getTime() - timezoneOffset * 60000);
+  return localTime.toLocaleString().slice(0,localTime.toLocaleString().search(","));
+}

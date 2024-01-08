@@ -44,11 +44,7 @@ const AdditionalInfo = () => {
     const {name, value} = e.target
     let new_data = {[name]: value}
     formData = {...appData[`${page.data}`],...new_data}
-    console.log({...appData,[`${page.data}`]:formData})
     setAppData({...appData,[`${page.data}`]:formData})
-
-    let allData={...appData, [`${page.data}`]:formData}
-    // console.log(allData)
 
   }
 
@@ -68,7 +64,7 @@ const AdditionalInfo = () => {
         //get secure url from our server
         const response = await axios.post(`/getS3FolderUrl`,{filePath: filePath})
 
-        const url = await response.data
+        const url = await response.data.data
         // console.log(url)
 
         const fileURL = await url.split('?')[0]

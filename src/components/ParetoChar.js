@@ -106,7 +106,6 @@ const ParetoChart = (props) => {
     const width = chartWidth - margin.left - margin.right;
     const height = chartHeight - margin.top - margin.bottom;
 
-
     // Create the left y-axis for the bar chart
     const yBar = d3.scaleLinear()
       .domain([0, d3.max(barData, d => Number(d.value))])

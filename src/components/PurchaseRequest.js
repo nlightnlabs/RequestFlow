@@ -50,7 +50,7 @@ const PurchaseRequest = () => {
 
   const getBusinessData = async ()=>{
     const response = await axios.get("/db/table/businesses")
-    const data = await response.data
+    const data = await response.data.data
     setBusinessData(data)
 
     let businessseSet = new Set()
@@ -65,7 +65,7 @@ const PurchaseRequest = () => {
 
   const getCategories = async ()=>{
     const response = await axios.get("/db/table/spend_categories")
-    const data = await response.data
+    const data = await response.data.data
     setCategoryData(data)
 
     let categorySet = new Set()
@@ -81,7 +81,7 @@ const PurchaseRequest = () => {
   const getSubcategories = async (category)=>{
     try{
       const response = await axios.get(`/db/subList/spend_categories/subcategory/category/${category}`)
-      const data = await response.data
+      const data = await response.data.data
       let subcategorySet = new Set()
       data.forEach(item=>{
         subcategorySet.add(item)

@@ -63,7 +63,7 @@ let formData = {}
 
     try{
       const response = await axios.get('/db/subList/spend_categories/subcategory/category/IT Equipment and Services')
-      const data = await response.data
+      const data = await response.data.data
       setCategoryData(data)
   
       let categorySet = new Set()

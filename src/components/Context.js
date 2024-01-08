@@ -18,6 +18,8 @@ export const ContextProvider = ({children}) =>{
     const [tables, setTables] = useState([])
     const icons = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/spendFlow/intake/icons"
     const generalIcons = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/icons"
+    const [apps, setApps] = useState([])
+    const [selectedApp, setSelectedApp] = useState("")
    
 
     const [pageList, setPageList] = useState([])
@@ -50,7 +52,11 @@ export const ContextProvider = ({children}) =>{
         tableName,
         setTableName,
         tables,
-        setTables
+        setTables,
+        apps,
+        setApps,
+        selectedApp,
+        setSelectedApp
     }
 
     return(

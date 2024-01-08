@@ -6,7 +6,6 @@ const SuperInput = forwardRef((props, ref) => {
         let target = {}
 
         const list = props.list || []
-
         const label = props.label
         const type = props.type
         const id = props.id

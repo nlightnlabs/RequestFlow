@@ -5,7 +5,8 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 import './styles/main.css'
 import RecordDetails from './RecordDetails.js';
 import { getTable } from './apis/axios.js';
-
+import {toProperCase} from './functions/formatValue.js'
+import { UTCToLocalTime } from './functions/time.js';
 
 const Table = (props) => {
 
@@ -15,38 +16,37 @@ const Table = (props) => {
     const [fields, setFields] = useState([])
     const [recordId, setSelectedRecordId] = useState(0)
     const [showRecordDetails, setShowRecordDetails] = useState(false)
-
+    
 
     const getTableData = async (req, res)=>{
       const response = await getTable(tableName)
-      setTableData(response.sort((a, b) => {
-        return  b.id-a.id;
-      }));
 
       let fieldList = []
-        if(response.length>0){
-          Object.keys(response[0]).map((field,index)=>(
-            fieldList.push({field: field, filter: true})
-          ))
+        if(response.data.length>0){
+          Object.keys(response.data[0]).map((field,index)=>{
+            fieldList.push({headerName: toProperCase(field.replaceAll("_"," ")), field: field, filter: true, color: "lightblue"})
+        })
           setFields(fieldList)
         }
+
+        setTableData(response.data.sort((a, b) => {
+          return  b.id-a.id;
+        }));
+
       }
       
-  
   useEffect(()=>{
-    console.log(tableName)
     getTableData()
-  },[props])
+  },[props.tableName])
 
 
     const onCellClicked = (e) => {
-      console.log(e.data.id)
       setSelectedRecordId(e.data.id)
       setShowRecordDetails(true)
     }
   
   return (
-      <div className="ag-theme-quartz" style={{ height: "100%", width: "100%" }}>
+      <div className="ag-theme-quartz animate__animated animate__fadeIn animate__duration-0.5s" style={{ height: "100%", width: "100%" }}>
         <AgGridReact 
           rowData={tableData} 
           columnDefs={fields} 
@@ -55,7 +55,7 @@ const Table = (props) => {
         {
           showRecordDetails && 
           <div 
-            className="d-flex flex-column border border-1 rounded-3 shadow bg-light p-3" style={{position: "absolute", top: 60, right: 0, height: "100%", width: 1000, overflowY:"auto", overflowX: "hidden", zIndex: 1000}}>
+            className="d-flex flex-column bg-light p-3" style={{position: "absolute", top: 60, right: 0, height: "100%", width: "100%", overflowY:"auto", overflowX: "hidden", zIndex: 100}}>
               <RecordDetails
                 tableName={tableName}
                 recordId={recordId}

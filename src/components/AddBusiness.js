@@ -41,7 +41,7 @@ const AddBusiness = () => {
 
   const getIndustryData = async ()=>{
     const response = await axios.get("/db/table/business_types")
-    const data = await response.data
+    const data = await response.data.data
     setIndustryData(data)
 
     let industrySet = new Set()
@@ -92,7 +92,7 @@ const AddBusiness = () => {
           }
             try{
               const response = await axios.post("/db/addRecord",{params})
-              const responseData = await response.data
+              const responseData = await response.data.data
               console.log(response)
               if(response.statusText=="OK"){
                 alert("Business has been added.  Thank you.")

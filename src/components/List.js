@@ -18,13 +18,13 @@ const List = (props) => {
 
   const getTableData = async (req, res)=>{
     const response = await getTable(tableName)
-    setTableData(response.sort((a, b) => {
+    setTableData(response.data.sort((a, b) => {
       return  b.id-a.id;
     }));
 
     let fieldList = []
-      if(response.length>0){
-        Object.keys(response[0]).map((field,index)=>(
+      if(response.data.length>0){
+        Object.keys(response.data[0]).map((field,index)=>(
           fieldList.push({field: field, filter: true})
         ))
         setFields(fieldList)

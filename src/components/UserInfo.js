@@ -92,8 +92,6 @@ const UserInfo = () => {
     e.preventDefault()
     const form = e.target
 
-    console.log(appData)
-
     if(e.nativeEvent.submitter.name==="backButton"){
         setFormClassList("form-group")
         let pageListCopy = pageList

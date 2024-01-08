@@ -44,7 +44,7 @@ const ITSupport = () => {
 
   const getCategories = async ()=>{
     const response = await axios.get("/db/table/it_support_types")
-    const data = await response.data
+    const data = await response.data.data
     setCategoryData(data)
 
     let categorySet = new Set()

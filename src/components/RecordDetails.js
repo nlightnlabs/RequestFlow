@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import Workflow from './Workflow'
-import Form from './Form'
+import DataEntryFrom from './DataEntryForm.js'
 import Activities from './Activities'
 import { generalIcons } from './apis/icons'
-import {deleteRecord, getRecord, getRecords, getData, getTable} from './apis/axios.js'
+import {deleteRecord, getRecord, getRecords, getData, getTable, updateRecord} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 
@@ -27,94 +27,69 @@ const RecordDetails = (props) => {
             idField: 'id'
         }
         const returnedData = await getRecord(params)
-        console.log(returnedData)
+        // console.log(returnedData)
         setRecordData(returnedData)
         setFields(Object.keys(returnedData))
       }
 
       const getActivityData = async ()=>{
-        const query = `SELECT A.*, B.first_name, B.last_name from activities as A left join users as B on A.user = B.email where "record_id"='${recordId}' and "app" = '${tableName}' order by "created" desc;`
+        const query = `SELECT A.*, B.first_name, B.last_name from activities as A left join users as B on A.user = B.email where "record_id"='${recordId}' and "app" = '${tableName}' order by "record_created" desc;`
         const returnedData = await getData(query)
-        setActivities(returnedData)
+
+        setActivities(returnedData.sort((a, b) => {
+            return  b.record_created-a.record_created;
+          }));
       }
+
+      const iconButtonStyle={
+        maxHeight: 30,
+        maxWidth: 30,
+        cursor: "pointer"
+      }
+
+      const ActivitiesPanel = {
+        resize: "horizontal",
+      }
+
+      const FormDataPanel = {
+        resize: "horizontal",
+      }
+
+
 
       useEffect(()=>{
         getRecordData()
         getActivityData()
       },[props])
 
-
-    const handleRecordDetailForm = (e)=>{
-
-        if(e.target.name == "closeButton"){
-            setShowRecordDetails(false)
-
-        }else if(e.target.name == "trashButton"){
-
-            alert("Please confirm you want to delete this record")
-
-            const params = {
-                tableName,
-                idField: 'id',
-                recordId
-            }
-            const deleteRespponse = deleteRecord(params)
-            console.log(deleteRespponse)
-            setShowRecordDetails(false)
-
-             //Refreshes the table in the UI
-            const updateTable = async (req, res)=>{
-                const response = await getTable(tableName)
-                refreshTable(response.sort((a, b) => {
-                return  b.id-a.id;
-                }));
-            }
-            updateTable()
-
-        }else{
-            return
-        }
-    }
-
   return (
-    <div className="flex-container" style={{height: "100%", overflow: "hidden"}}>
-        <div className="row">
-            <div className="d-flex justify-content-between mb-3">
-                {userData.role!=="Individual" && <div className="d-flex justify-content-end">
-                    <div className="button-group justify-content-between">
-                        <button className="btn btn-primary m-1" name="approveButton" onClick={(e)=>{handleRecordDetailForm(e)}}>Approve</button>
-                        <button className="btn btn-danger m-1" name="denyButton" onClick={(e)=>{handleRecordDetailForm(e)}}>Deny</button>
-                    </div>
-                </div>}
-                <div className="d-flex justify-content-end">
-                    <div className="button-group">
-                        <img src={`${generalIcons}/trash_icon.png`} className="icon-button" name="trashButton" onClick={(e)=>{handleRecordDetailForm(e)}}></img>
-                        <img src={`${generalIcons}/close_icon.png`} className="icon-button"  name="closeButton" onClick={(e)=>{handleRecordDetailForm(e)}}></img>
-                    </div>
-                </div>
+    <div className="flex flex-column" style={{height: "100%", overflow: "hidden"}}>
+        <div className="d-flex justify-content-end rounded-3" style={{backgroundColor: "rgb(230,240,250"}}>
+            <div className="button-group p-1">
+                <img src={`${generalIcons}/close_icon.png`} style={iconButtonStyle}  name="closeButton" onClick={(e)=>{setShowRecordDetails(false)}}></img>
             </div>
         </div>
-        <div className="row">
+        {/* <div className="row">
             <Workflow/>
-        </div>
+        </div> */}
         <div className="row">
-            <div className="col-6 p-3">
-                <Form
+            <div className="col-6 p-3" style={FormDataPanel}>
+                <DataEntryFrom
+                    formName = {tableName}
                     tableName={tableName}
+                    pageTitle={"Record Details"}
                     recordId={recordId}
                     formData={recordData}
                     fields = {fields}
-                    userData={userData}
-                    updateActivitiesOnSave = {true}
-                    updateRecord = {setRecordData}
-                    refreshActivities = {setActivities}
-                    refreshTable = {refreshTable}
+                    userId={userData.id}
+                    updateParentStates = {[getActivityData, getRecordData]}
                 />
              </div>
             
-            <div className="col-6 p-3">
+            <div className="col-6 p-3" style={ActivitiesPanel}>
                 <Activities
                     tableName={tableName}
+                    pageTitle={"Activities"}
                     recordId={recordId}
                     userData={userData}
                     activities={activities}
