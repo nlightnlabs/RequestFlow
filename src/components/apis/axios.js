@@ -217,7 +217,26 @@ export const generateImage = async (req)=>{
   }
 }
 
+//Scan Document
+export const scanInvoice = async ({args})=>{
+  
+  const {documentText, record} = args
 
+  const prompt = `The following is an invoice received from a supplier: ${documentText}. Fill in the values in this javascript object: ${JSON.stringify(record)} based on the information in the invoice. Leave a value blank if it can not be determined based on the invoice document received. Return response as javascript object. Be sure to return a properly structured json object with closed brackets and array sub elements if needed.`
+  console.log(prompt)
+
+  const params = {
+    prompt: prompt
+  }
+
+  try{
+    const result = await dbUrl.post("/gpt",{params})
+    console.log(JSON.parse(result.data))
+    return (JSON.parse(result.data))
+  }catch(error){
+    console.log(error)
+  }
+}
 
 //Get list of all tables in database:
 const query= `SELECT table_name FROM information_schema.tables where table_schema = 'public';`

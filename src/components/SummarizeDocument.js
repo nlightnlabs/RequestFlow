@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
 
+import { Document, Page, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const SummarizeDocument = () => {
@@ -77,7 +78,6 @@ const SummarizeDocument = () => {
 }
   return (
     <div className="d-flex flex-column">
-      <h3 className="text-center">Summarize Document</h3>
         <div className="form-group">
             <input className="form-control mt-3" type="file" onChange={onFileChange} />
         </div>

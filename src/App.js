@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
 import {Context } from './components/Context';
 import "bootstrap/dist/css/bootstrap.min.css"
+import "https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js"
 import 'animate.css';
 import {appIcons, generalIcons} from './components/apis/icons.js'
 
@@ -63,6 +64,7 @@ function App() {
   } = useContext(Context)
 
 
+
   let pageData=[
     {name: "Log In", component: <Login/>, data: "user_info", request_type: false, description: "Login page", icon:`${appIcons}/log_in_icon.png`},
     {name: "User Info", component: <UserInfo/>, data: "user_info", request_type: false, description: "User profile", icon:`${appIcons}/sign_up_icon.png`},
@@ -123,8 +125,13 @@ function App() {
     backgroundSize: "cover",
     backgroundImage: "linear-gradient(0deg, rgb(220, 230, 255), rgb(245, 250, 255), white)",
     height: "100vh",
-    overflow: "auto"
+    width: "100vw",
+    overflow: "hidden"
   }
+
+  
+
+  
  
   return (
     <div style={pageStyle}>
