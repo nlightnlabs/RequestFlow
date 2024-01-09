@@ -1,7 +1,6 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
 import {Context } from './components/Context';
 import "bootstrap/dist/css/bootstrap.min.css"
-import "https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js"
 import 'animate.css';
 import {appIcons, generalIcons} from './components/apis/icons.js'
 
@@ -131,8 +130,7 @@ function App() {
 
   
 
-  
- 
+
   return (
     <div style={pageStyle}>
 
