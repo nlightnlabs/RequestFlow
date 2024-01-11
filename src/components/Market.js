@@ -190,11 +190,18 @@ const Market = (props) => {
     setOrderItems(tempOrderItems)
   }
 
-  const navigateTo = useNavigate()
   const handleSelectedAd =(adId)=>{
+    console.log(adId)
+    const supplierWebsite = ads.filter(ad=>ad.id===adId)[0].supplier_website
+
     if (adId>0){
       setAppData({...appData,...{["selected_ad_id"]:adId}})
-      navigateTo(ads[adId].supplier_website)
+      // window.location.href = `https://${ads[adId].supplier_website}`
+      const externalSiteURL = `https://${supplierWebsite}`
+      const windowFeatures = 'width=800,height=600,resizable,scrollbars=yes';
+  
+      // Open the new window
+      window.open(externalSiteURL, '_blank', windowFeatures);
     }
   }
   
