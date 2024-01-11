@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext, useRef} from 'react'
 import { Context } from "./Context.js"
+import {getTable} from './apis/axios.js'
 import axios from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 
@@ -40,8 +41,8 @@ const AddBusiness = () => {
   const formRef = useRef()
 
   const getIndustryData = async ()=>{
-    const response = await axios.get("/db/table/business_types")
-    const data = await response.data.data
+    const response = await getTable("business_types")
+    const data = await response.data
     setIndustryData(data)
 
     let industrySet = new Set()

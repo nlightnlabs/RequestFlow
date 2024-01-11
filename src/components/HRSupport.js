@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext, useRef} from 'react'
 import { Context } from "./Context.js"
-import axios from './apis/axios.js'
+import {getTable} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import SuperInput from './SuperInput.js'
@@ -47,8 +47,8 @@ const HRSupport = () => {
   const categoryRef = useRef()
 
   const getCategories = async ()=>{
-    const response = await axios.get("/db/table/hr_support_types")
-    const data = await response.data.data
+    const response = await getTable("hr_support_types")
+    const data = await response.data
     setCategoryData(data)
 
     let categorySet = new Set()

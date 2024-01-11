@@ -1,7 +1,7 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
 import {ContextProvider, Context } from './Context';
 import "bootstrap/dist/css/bootstrap.min.css"
-import {getData, getTable} from './apis/axios.js'
+import {getTable} from './apis/axios.js'
 import { toProperCase } from './functions/formatValue.js';
 import { appIcons, generalIcons } from './apis/icons.js';
 
@@ -73,7 +73,6 @@ const Header = () => {
 
     const homeIcon = `${generalIcons}/home_icon.png`
     const menuIcon = `${generalIcons}/menu_icon.png`
-    const gptIcon = `${generalIcons}/gpt_icon.png`
 
     const iconStyle = {
         maxHeight: 50,

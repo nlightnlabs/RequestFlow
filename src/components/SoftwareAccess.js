@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext, useRef, createRef} from 'react'
 import { Context } from "./Context.js"
-import axios from './apis/axios.js'
+import {getTable} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import SuperInput from './SuperInput.js'
@@ -65,8 +65,8 @@ const SoftwareAccess = () => {
 
 
   const getProducts = async ()=>{
-    const response = await axios.get('/db/table/products')
-    const data = await response.data.data
+    const response = await getTable('products')
+    const data = await response.data
     setProductData(data)
 
     let productSet = new Set()

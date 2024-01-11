@@ -3,14 +3,15 @@ console.log(`Environment: ${process.env.NODE_ENV}`);
 
 export const baseURL = process.env.NODE_ENV==="production" ? "https://nlightnlabs.net" : "http://localhost:3001"
 
+export default axios.create({
+  baseURL,
+})
+
 export const dbUrl = axios.create({
   baseURL,
 })
 
-//console.log(baseURL);
-export default axios.create({
-    baseURL,
-})
+
 
 
 //General Query

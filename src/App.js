@@ -27,7 +27,6 @@ import ForgotPassword from './components/ForgotPassword.js';
 import ResetPassword from './components/ResetPassword.js';
 import Header from './components/Header.js';
 import Requests from './components/Requests.js';
-import Test from './components/Test.js';
 import GenAIStudio from './components/GenAIStudio.js';
 import Records from './components/Records.js'
 import Market from './components/Market.js'
@@ -67,11 +66,11 @@ function App() {
 
 
   let pageData=[
+    {name: "Home", component: <Home/>, data: "request_summary", request_type: false, description: "Description for this request", icon:`${appIcons}/home_icon.png`},
     {name: "Log In", component: <Login/>, data: "user_info", request_type: false, description: "Login page", icon:`${appIcons}/log_in_icon.png`},
     {name: "User Info", component: <UserInfo/>, data: "user_info", request_type: false, description: "User profile", icon:`${appIcons}/sign_up_icon.png`},
     {name: "Forgot Password", component: <ForgotPassword/>, data: "email", request_type: false, description: "Forgot Password page", icon:`${appIcons}/sign_up_icon.png`},
     {name: "Reset Password", component: <ResetPassword/>, data: "user_info", request_type: false, description: "Password reset page", icon:`${appIcons}/sign_up_icon.png`},
-    {name: "Home", component: <Home/>, data: "request_summary", request_type: false, description: "Description for this request", icon:`${appIcons}/home_icon.png`},
     {name: "Purchase Request", component: <PurchaseRequest/>, data: "request_details", request_type: true, description: "Purchase a good or service you need", icon:`${appIcons}/purchase_request_icon.png`},
     {name: "Software Access", component: <SoftwareAccess/>, data: "request_details", request_type: true, description: "Get access to software applications", icon:`${appIcons}/software_access_icon.png`},
     {name: "IT Equipment", component: <ITEquipment/>, data: "request_details", request_type: true, description: "Get access to common IT supplies like laptops, monitors, peripherals, etc.", icon:`${appIcons}/it_equipment_icon.png`},
@@ -87,7 +86,6 @@ function App() {
     {name: "Requests", component: <Requests/>, data: "request_page_settings", request_type: false, description: "Dashboard for all requets",icon:`${appIcons}/requests_icon.png`},
     {name: "Add Business", component: <AddBusiness/>, data: "new_business_data", request_type: false, description: "Description for this request",icon:`${appIcons}/add_business.png`},
     {name: "Add Product", component: <AddProduct/>, data: "new_product_data", request_type: false, description: "Description for this request",icon:`${appIcons}/add_product.png`},
-    {name: "Test", component: <Test/>, data: "test_data", request_type: false, description: "Description for this request",icon:`${appIcons}/test.png`},
     {name: "GenAIStudio", component: <GenAIStudio/>, data: "GenAIStudio", request_type: false, description: "Description for this request",icon:`${appIcons}/gpt_icon.png`},
     {name: "Records", component: <Records/>, data: "record_data", request_type: false, description: "Description for this request",icon:`${appIcons}/record.png`},
     {name: "Market", component: <Market/>, data: "market_data", request_type: false, description: "Description for this request",icon:`${appIcons}/shopping_icon.png`},
