@@ -51,6 +51,12 @@ const Header = () => {
       email: "",
     })
 
+    const getApps = async ()=>{
+      const response = await getTable("apps")
+      console.log(response)
+      setApps(response.data)
+  }
+
     const initializeUserData=()=>{
       let x = JSON.stringify(appData) 
       if(x.search("user_info")>0){
@@ -58,15 +64,11 @@ const Header = () => {
       }
     }
 
-    const getApps = async ()=>{
-        const response = await getTable("apps")
-        console.log(response)
-        setApps(response.data)
-    }
-
+    
     useEffect(()=>{
-      initializeUserData()
       getApps()
+      initializeUserData()
+      console.log(Context)
     },[appData, userLoggedIn])
 
     const homeIcon = `${generalIcons}/home_icon.png`

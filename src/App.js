@@ -115,6 +115,7 @@ function App() {
 
  useEffect(()=>{
     console.log(baseURL)
+    console.log(Context)
     getPageData()
     setRequestTypes(getRequestTypes()) 
     
@@ -167,8 +168,6 @@ function App() {
             <>{pages.filter(x=>x.name===pageName)[0].component}</>
           </>
         }
-
-        {/* <LandingPage/> */}
 
     </div>
   );
