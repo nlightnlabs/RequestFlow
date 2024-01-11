@@ -37,11 +37,16 @@ const SuperInput = forwardRef((props, ref) => {
         const dropDownFill = props.dropDownFill
 
         const [options, setOptions] = useState([])
-        const getOptions = ()=>{
-          if(props.list && props.list.length>0 && options.length ==0){
-            setOptions(props.list.filter(e=>e))
+        
+        const getOptions = (list)=>{
+          if(list && list.length>0 && options.length ==0){
+            setOptions(list.filter(e=>e))
           }
-        }
+        } 
+
+        useEffect(()=>{
+          getOptions(props.list)
+        },[props.list])
 
 
         const [value, setValue] = useState(props.value)
@@ -114,13 +119,22 @@ const SuperInput = forwardRef((props, ref) => {
       
         const handleOptionClick=(e)=>{
 
+          console.log(e)
+
           let selectedIndex = e.target.id
           let value = props.list[selectedIndex]
 
           setValue(value)
           setSelectedIndex(selectedIndex)
           setDropDownDisplay("none")
-          handleChange(value)
+          
+          let updatedEvent = e
+          const selectedValue = {['value']:value}
+          updatedEvent['target'] = {...e['target'],...selectedValue}
+          console.log(updatedEvent)
+          handleInputChange(updatedEvent)
+
+          handleChange(value,updatedEvent)
         }
       
         const handleOptionHover = (event)=>{
@@ -143,13 +157,14 @@ const SuperInput = forwardRef((props, ref) => {
           }
         }
       
-        const handleChange=(value)=>{
+        const handleChange=(value,e)=>{
 
           if(typeof onChange =="function"){
             target = {
               ...props,
               value: value,
               selectedIndex,
+              action: e.type
             }
 
             onChange({target})
@@ -172,9 +187,16 @@ const SuperInput = forwardRef((props, ref) => {
           required: required || false
         }
       
-        const handleInputChange=(inputText)=>{
+        const handleInputChange=(e)=>{
           
+          console.log(e)
+
+          let inputText = e.target.value;
+          console.log(inputText)
+
           setValue(inputText)
+          console.log(list.length)
+          console.log(inputText.length)
 
           if(list.length>0){
             // filter the options based on the text user has inputted
@@ -182,16 +204,14 @@ const SuperInput = forwardRef((props, ref) => {
               console.log(inputText.length)
               setOptions(options.filter(item=>item.toLowerCase().includes((inputText).toLowerCase())))
             }else{
-              setOptions(props.list.filter(e=>e))
+              console.log(props.list)
+              setOptions(props.list)
             }
           }
-          handleChange(inputText)
+          handleChange(inputText,e)
         }
 
-        useEffect(()=>{
-          getOptions()
-          
-        },[props])
+        
 
         return (
           <div 
@@ -212,8 +232,8 @@ const SuperInput = forwardRef((props, ref) => {
                       ref = {inputRef}
                       onClick={(e)=>handleDropDownToggle(e)}
                       value={value}
-                      onChange={(e)=>handleInputChange(e.target.value)}
-                      onBlur={(e)=>handleInputChange(e.target.value)}
+                      onChange={(e)=>handleInputChange(e)}
+                      onBlur={(e)=>handleInputChange(e)}
                       {...inputProps}
                       >
                   </input>
@@ -228,7 +248,7 @@ const SuperInput = forwardRef((props, ref) => {
                       ref = {inputRef}
                       onClick={(e)=>handleDropDownToggle(e)}
                       value={value}
-                      onChange={(e)=>handleInputChange(e.target.value)}
+                      onChange={(e)=>handleInputChange(e)}
                       {...inputProps}
                       >
                   </input>

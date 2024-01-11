@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef, useLayoutEffect} from 'react'
 import {appIcons} from './apis/icons.js'
 import { askGPT, generateImage } from './apis/axios'
 import SummarizeDocument from './SummarizeDocument'
@@ -131,23 +131,63 @@ const Gpt = (props) => {
         }
     }
 
+// This segment auto sizes the content height according to the window height
+const contentContainerRef = useRef();
+const [contentContainerHeight, setContentContainerHeight] = useState('');
+const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+useLayoutEffect(() => {
+  const handleResize = () => {
+    setWindowHeight(window.innerHeight);
+  };
+
+  // Listen for window resize events
+  window.addEventListener('resize', handleResize);
+
+  // Clean up the event listener on component unmount
+  return () => {
+    window.removeEventListener('resize', handleResize);
+  };
+}, []);
+
+useLayoutEffect(() => {
+  const handleContainerResize = () => {
+    if (contentContainerRef.current) {
+      const { top } = contentContainerRef.current.getBoundingClientRect();
+      setContentContainerHeight(windowHeight - top);
+    }
+  };
+
+  // Recalculate container height on window resize
+  window.addEventListener('resize', handleContainerResize);
+
+  // Call initially to calculate height after render
+  handleContainerResize(); 
+
+  // Clean up the event listener on component unmount
+  return () => {
+    window.removeEventListener('resize', handleContainerResize);
+  };
+}, [windowHeight, contentContainerRef]);
+
 
  const pageStyle={fontSize: 14, width:"100%", height: "100%", overflow: "hidden"}
  const titleStyle={fontSize: "32px", fontWeight: "bold"}
+ const pageClass = "flex-container animate__animated animate__fadeIn animate__duration-0.5s"
 
   return (
-    <div className="d-flex flex-column" style={pageStyle}>
+    <div className={pageClass} style={pageStyle}>
         
         <div className="d-flex bg-light p-3">
             <img src={`${appIcons}/genAI_icon.png`} style={{height: "50px", width: "50px"}} alt="Gen AI Icon"></img>
-            <div style={titleStyle}>GenAI Studio</div>
+            <div style={titleStyle}>GenAI Workbench</div>
         </div>
 
         <div className="d-flex" style={{width: "100%", height: "100%", overflow:"hidden"}}>
             <div 
                 className="d-flex flex-column p-3" 
                 style={{width: "250px", backgroundImage:"linear-gradient(0deg, rgb(150, 0, 150), rgb(0, 0, 150), rgb(0,150,0))", height: "100%"}}
-            >
+            >gen
                 <button id="askButton" className="btn btn-secondary mb-3"  onClick={(e)=>setTaskType("Ask Question")}>Ask Question</button>
                 <button id="summarizeDocumentButton" className="btn btn-secondary mb-3"  onClick={(e)=>setTaskType("Summarize Document")}>Summarize Document</button>
                 <button id="scanInvoiceButton" className="btn btn-secondary mb-3" onClick={(e)=>setTaskType("Scan Invoice")}>Scan Invoice</button>
@@ -155,22 +195,21 @@ const Gpt = (props) => {
             </div>
 
         <div className="d-flex bg-dark  flex-fill flex-column" 
-            style={{height: "100%", width: "100%", overflowY: "auto", backgroundImage:"linear-gradient(0deg, rgb(50, 50, 50), rgb(100, 100, 100))", height: "100%"}}
+            style={{height: "100%", width: "100%", overflowY: "hidden", backgroundImage:"linear-gradient(0deg, rgb(50, 50, 50), rgb(100, 100, 100))"}}
             
             >
             <div className = "d-flex justify-content-center" style={{fontSize: "24px", color: "white", fontWeight: "bold"}}>{taskType}</div>
             
             {(taskType=="Ask Question" || taskType=="Generate Image") &&
-            <div className="d-flex justify-content-center w-100">
-                <div className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow" style={{width: "75%"}}>
+            <div className="d-flex flex-column w-100">
+                <div className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow">
                     <textarea
                         id='prompt'
                         name='prompt'
                         value={prompt}
                         onChange={(e)=>setPrompt(e.target.value)}
-                        style={{fontSize: "18px", color: "gray", outline: "none", width: "100%"}}
+                        style={{fontSize: "14px", color: "gray", outline: "none", width: "100%"}}
                         className="border rounded-3 p-3"
-                        rows={3}
                     >
                     </textarea>
                     <div className="d-flex justify-content-center mt-1" style={{width: "100%"}}>
@@ -178,23 +217,22 @@ const Gpt = (props) => {
                             <button id="askButton" className="btn btn-primary" onClick={(e)=>handleSubmit(true)}>Submit</button>
                         </div>
                     </div>
-
-                    {response.length>0 && taskType == "Ask Question" &&
-                    <div className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow mt-3">
-                        <span style={{color: "black", fontSize: "16px", fontWeight: 'bold'}}>{response}</span>
-                    </div>
-                    }
-
-                    {imageResponse && taskType == "Generate Image" &&
-                    <div className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow mt-3" style={{height: "90%", overflowY: "auto"}}>
-                        <img src={imageResponse} alt="image response" style={{color: "#70AD47", fontWeight: 'bold', height:"auto"}}></img>
-                    </div>
-                    }
                 </div>
+                {response.length>0 && taskType == "Ask Question" &&
+                <div className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow mt-3" style={{height: ""}}>
+                    <span style={{color: "black", fontSize: "14px", fontWeight: 'bold'}}>{response}</span>
+                </div>
+                }
+
+                {imageResponse && taskType == "Generate Image" &&
+                <div ref={contentContainerRef} className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow mt-3" style={{height:contentContainerHeight, overflowY:"auto"}}>
+                    <img src={imageResponse} alt="image response" style={{color: "#70AD47", fontWeight: 'bold', width: "100%", height:"auto"}}></img>
+                </div>
+                }
             </div>
+            
             }
 
-            
             {taskType == "Scan Invoice" &&
             <div className="d-flex justify-content-center w-100">
                 <div className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow" style={{width: "75%"}}>

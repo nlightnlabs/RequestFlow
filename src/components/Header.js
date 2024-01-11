@@ -80,6 +80,8 @@ const Header = () => {
 
   const handleMenuOption=(elem)=>{
     
+    console.log(elem)
+
     if(elem == "newRequestButton"){
       let nextPage = "Home"
       setPageList([nextPage])
@@ -98,15 +100,10 @@ const Header = () => {
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
     }
-    if(elem == "landingButton"){
-      let nextPage = "Landing Page"
-      setPageList([nextPage])
-      setPage(pages.filter(x=>x.name===nextPage)[0])
-      setPageName(nextPage)
-    }
-    if(elem == "gptButton"){
-      let nextPage = "GPT"
-      setPageList([nextPage])
+    if(elem == "homeButton"){
+      let nextPage = "Home"
+      setPageList([...pageList,nextPage]) 
+      console.log(pages.filter(x=>x.name===nextPage)[0])
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
     }
@@ -137,7 +134,9 @@ const Header = () => {
   const topBarStyle={
     position: "sticky",
     top: 0,
-    height: 60
+    height: 60,
+    borderBottom: "1px solid lightgray",
+    marginBottom: "10px"
   }
 
   const [windowDimensions, setWindowDimensions] = useState({
@@ -171,45 +170,45 @@ const Header = () => {
   }
 
   return (
-            <div ref={topBarRef} className="d-flex bg-white justify-content-end" style={topBarStyle}>
-              {userLoggedIn && 
-              <div className="d-flex flex-column p-2">
-                <span className="text-secondary" style={{fontSize:12}}>Hello</span>
-                <span className="text-primary fw-bold" style={{fontSize:16}}>{userData.first_name}</span>
-              </div>}
-              <div className="p-1"><img id="landingButton" src={homeIcon} style={iconStyle} onClick={(e)=>handleMenuOption(e.target.id)}></img></div>
-              <div className="p-1"><img src={menuIcon} style={iconStyle} onClick={()=>setShowUserOptions(!showUserOptions)}></img></div>
+    <div ref={topBarRef} className="d-flex bg-white justify-content-end" style={topBarStyle}>
+      {userLoggedIn && 
+      <div className="d-flex flex-column p-2">
+        <span className="text-secondary" style={{fontSize:12}}>Hello</span>
+        <span className="text-primary fw-bold" style={{fontSize:16}}>{userData.first_name}</span>
+      </div>}
+      <div className="p-1"><img id="homeButton" src={homeIcon} style={iconStyle} onClick={(e)=>handleMenuOption(e.target.id)}></img></div>
+      <div className="p-1"><img id="menuButton" src={menuIcon} style={iconStyle} onClick={(e)=>setShowUserOptions(!showUserOptions)}></img></div>
 
-              {showUserOptions &&
-              <div className="d-flex position-absolute flex-column border border-1 rounded rounded-3 shadow shadow p-3" 
-              style={menuStyle}
-              onMouseLeave={()=>setShowUserOptions(false)}
-              >
-                <div className="d-flex flex-column flex-wrap mb-3 border-bottom">
-                    <div style={{fontSize: 12}}>Signed in:</div>
-                    <div className="fw-bold text-primary p-1" style={{fontSize: 12}}>{userData.full_name}</div>
-                </div>
+      {showUserOptions &&
+      <div className="d-flex position-absolute flex-column border border-1 rounded rounded-3 shadow shadow p-3" 
+      style={menuStyle}
+      onMouseLeave={()=>setShowUserOptions(false)}
+      >
+        <div className="d-flex flex-column flex-wrap mb-3 border-bottom">
+            <div style={{fontSize: 12}}>Signed in:</div>
+            <div className="fw-bold text-primary p-1" style={{fontSize: 12}}>{userData.full_name}</div>
+        </div>
 
-                <div className="d-flex flex-column flex-wrap mb-3 border-top-1">
-                    <button id="newRequestButton" name="newRequestButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>New Request</button>
-                    <button id ="updateButton" name="updateButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Update Profile</button>
-                    <button id="signOutButton" name="signOutButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Sign out</button>
-                </div>
+        <div className="d-flex flex-column flex-wrap mb-3 border-top-1">
+            <button id="newRequestButton" name="newRequestButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>New Request</button>
+            <button id ="updateButton" name="updateButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Update Profile</button>
+            <button id="signOutButton" name="signOutButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Sign out</button>
+        </div>
 
-                <div className="d-flex flex-column flex-wrap mb-3 border-top-1 ">
-                  {apps.map((app,index)=>(
-                      <button key={index} id={app.name} name={app.name} className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleAppOption(app)}>
-                        <div className="d-flex justify-content-start">
-                          <img src={`${appIcons}/${app.icon_url}`} style={{height: 25, width: 25, marginRight: 10}}></img>
-                          {app.label}
-                        </div>
-                      </button>
-                  ))}
+        <div className="d-flex flex-column flex-wrap mb-3 border-top-1 ">
+          {apps.map((app,index)=>(
+              <button key={index} id={app.name} name={app.name} className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleAppOption(app)}>
+                <div className="d-flex justify-content-start">
+                  <img src={`${appIcons}/${app.icon_url}`} style={{height: 25, width: 25, marginRight: 10}}></img>
+                  {app.label}
                 </div>
-                    
-                </div>
-              }
-            </div>
+              </button>
+          ))}
+        </div>
+            
+        </div>
+      }
+    </div>
   )
 }
 

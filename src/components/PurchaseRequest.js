@@ -6,7 +6,6 @@ import 'animate.css';
 import SuperInput from './SuperInput.js'
 
 
-
 const PurchaseRequest = () => {
 
   const {
@@ -69,39 +68,45 @@ const PurchaseRequest = () => {
     setCategoryData(data)
 
     let categorySet = new Set()
-    
       await data.forEach(item=>{
         categorySet.add(item.category)
       })
       
       let categoryList = [...categorySet]
       setCategories(categoryList.sort())
+      console.log(categoryList)
   }
 
   const getSubcategories = async (category)=>{
     try{
       const response = await axios.get(`/db/subList/spend_categories/subcategory/category/${category}`)
-      const data = await response.data.data
+      const data = await response.data
+      console.log(data)
       let subcategorySet = new Set()
       data.forEach(item=>{
         subcategorySet.add(item)
       })
       let subcategoryList = [...subcategorySet]
       setSubcategories(subcategoryList.sort())
+      console.log(subcategoryList.sort())
     }catch(error){
       console.log(error)
     }
   }
 
   const handleChange = (e)=>{
+    console.log(e)
       const {name, value} = e.target
       let new_data = {[name]: value}
       formData = {...appData[`${page.data}`],...new_data}
       setInitialFormData(formData)
       setAppData({...appData,[`${page.data}`]:formData})
       if(name=="category"){
-        setSubcategories([""])
-        getSubcategories(value)
+        let selectedCategory = value
+        if(categories.find(record=>record===selectedCategory)){
+          setSubcategories([""])
+          getSubcategories(value)
+        }
       }
   }
 

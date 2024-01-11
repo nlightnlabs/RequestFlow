@@ -55,20 +55,17 @@ const AdditionalInfo = () => {
       // console.log(file)
 
       let fileName = file.name
-      const filePath=`spendFlow/intake/attachments/${fileName}`
-      // console.log(filePath)
+      const filePath=`spendFlow/intake/attachments/${appData["user_info"].email}/${fileName}`
+      console.log(filePath)
 
 
       const uploadFiles = async (req, res)=>{
 
         //get secure url from our server
         const response = await axios.post(`/getS3FolderUrl`,{filePath: filePath})
-
-        const url = await response.data.data
-        // console.log(url)
+        const url = await response.data
 
         const fileURL = await url.split('?')[0]
-        // console.log(fileURL)
 
         //Post file directly to s3 bucket
         await fetch(url, {

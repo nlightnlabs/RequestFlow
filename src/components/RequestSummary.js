@@ -37,6 +37,9 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
   
  const boxStyle={
     width: "100%",
+    height: "100%",
+    overflowY: "auto"
+
  }
 
  const [files, setFiles] = useState([])
@@ -69,11 +72,11 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
  }
 
   return (
-    <div className = {pageClass}>
-        <div className="row">
+    <div className = {pageClass} style={{height: "100%", overflow:"hidden"}}>
+        <div className="row" style={{height: "100%", overflow:"hidden"}}>
             <div className="col"></div>
 
-            <div className="col-lg-8">
+            <div className="col-lg-8" style={{height: "100%", overflowY:"hidden"}}>
 
                 <div className="d-flex justify-content-center animate__animated animate__heartbeat animate__duration-0.5s" style={{height: 150, overflow: "hidden"}}>
                     <img  src={SuccessIcon} style={{height: 125} }alt="Success Icon"/>
@@ -95,7 +98,7 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
                 <div className="=flex-fill shadow shadow-lg rounded-top-2" style={{backgroundImage: "linear-gradient(45deg, rgb(9, 128, 243), rgb(0, 223, 255))", height:25}}></div>
                 
                 <div className="box d-flex flex-column border border-1 rounded-2 bg-light shadow p-3" style={boxStyle}>
-                    <table className="table">
+                    <table className="table" style={{overFlowY: "scroll"}}>
                         <tbody>
                             {
                             Object.keys(appData).map((attr, index) => (

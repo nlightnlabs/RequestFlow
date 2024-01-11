@@ -1,8 +1,10 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
+import {baseURL} from './components/apis/axios.js';
 import {Context } from './components/Context';
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import {appIcons, generalIcons} from './components/apis/icons.js'
+import {getTable} from './components/apis/axios.js'
 
 import Home from './components/Home.js';
 import PurchaseRequest from './components/PurchaseRequest.js';
@@ -25,7 +27,6 @@ import ForgotPassword from './components/ForgotPassword.js';
 import ResetPassword from './components/ResetPassword.js';
 import Header from './components/Header.js';
 import Requests from './components/Requests.js';
-import LandingPage from './components/LandingPage.js';
 import Test from './components/Test.js';
 import GenAIStudio from './components/GenAIStudio.js';
 import Records from './components/Records.js'
@@ -35,6 +36,7 @@ import NewsArticle from './components/NewsArticle.js';
 
 function App() {
 
+  
 
   const {
     user,
@@ -86,13 +88,22 @@ function App() {
     {name: "Add Business", component: <AddBusiness/>, data: "new_business_data", request_type: false, description: "Description for this request",icon:`${appIcons}/add_business.png`},
     {name: "Add Product", component: <AddProduct/>, data: "new_product_data", request_type: false, description: "Description for this request",icon:`${appIcons}/add_product.png`},
     {name: "Test", component: <Test/>, data: "test_data", request_type: false, description: "Description for this request",icon:`${appIcons}/test.png`},
-    {name: "Landing Page", component: <LandingPage/>, data: "landing_page", request_type: false, description: "Description for this request",icon:`${appIcons}/home.png`},
-    {name: "Gen AI Studio", component: <GenAIStudio/>, data: "GenAIStudio", request_type: false, description: "Description for this request",icon:`${appIcons}/gpt_icon.png`},
+    {name: "GenAIStudio", component: <GenAIStudio/>, data: "GenAIStudio", request_type: false, description: "Description for this request",icon:`${appIcons}/gpt_icon.png`},
     {name: "Records", component: <Records/>, data: "record_data", request_type: false, description: "Description for this request",icon:`${appIcons}/record.png`},
     {name: "Market", component: <Market/>, data: "market_data", request_type: false, description: "Description for this request",icon:`${appIcons}/shopping_icon.png`},
     {name: "News Article", component: <NewsArticle/>, data: "news_article", request_type: false, description: "Description for this request",icon:`${appIcons}/news_article_icon.png`}
   ]
 
+
+  const getPageData = async(req, res)=>{
+    try{
+      // const response = await getTable("pages")
+      setPages(pageData)
+      setPage(pageData.filter(x=>x.name===pageName)[0])
+    }catch(error){
+      console.log(error)
+    }
+  }
 
   const getRequestTypes = ()=>{
     let list = []
@@ -103,22 +114,23 @@ function App() {
   }
 
  useEffect(()=>{
-    setPages(pageData)
+    console.log(baseURL)
+    getPageData()
     setRequestTypes(getRequestTypes()) 
-    setPage(pageData.filter(x=>x.name===pageName)[0])
+    
   },[])
  
 
-  const handleSelect=(e)=>{
+  // const handleSelect=(e)=>{
 
-    setRequestType(e.target.id)
-    let request_type = e.target.id
-    setAppData({...appData.request_data,...request_type})
+  //   setRequestType(e.target.id)
+  //   let request_type = e.target.id
+  //   setAppData({...appData.request_data,...request_type})
   
-    pages.push(e.target.id)
-    setPageList(pages)
-    setPage(e.target.id)
-  }
+  //   pages.push(e.target.id)
+  //   setPageList(pages)
+  //   setPage(e.target.id)
+  // }
 
   const pageStyle={
     backgroundSize: "cover",
@@ -138,7 +150,7 @@ function App() {
           <>
             <Login/>
             <div className="d-flex justify-content-center mt-5 ">
-              <img style={{maxHeight: 100,  backgroundColor:"none", cursor: "pointer"}} src={"https://nlightnlabs01.s3.us-west-1.amazonaws.com/nlightn+labs+logo.png"} onClick={()=>setPageName("Test")}></img>
+              <img style={{maxHeight: 100,  backgroundColor:"none", cursor: "pointer"}} src={"https://nlightnlabs01.s3.us-west-1.amazonaws.com/nlightn+labs+logo.png"}></img>
             </div>
           </>
           }
@@ -152,7 +164,7 @@ function App() {
           <div style={{position: "relative", zIndex: 99999}}>
             <Header/>
           </div>
-          <>{pages.filter(x=>x.name===pageName)[0].component}</>
+            <>{pages.filter(x=>x.name===pageName)[0].component}</>
           </>
         }
 

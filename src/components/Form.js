@@ -66,7 +66,7 @@ const Form = (props) => {
    //Refreshes the table in the UI
    const updateTable = async (req, res)=>{
         const response = await getTable(tableName)
-        refreshTable(response.sort((a, b) => {
+        refreshTable(response.data.data.sort((a, b) => {
         return  b.id-a.id;
         }));
     }

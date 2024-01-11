@@ -96,6 +96,7 @@ const MultiInput = forwardRef((props, ref) => {
     outline: "none",
     width: width || "100%",
     border: border|| "1px solid rgb(235,235,235)",
+    get padding(){ if(padding){return padding}else{ return this.fontSize/2}}
   }
 
   const textAreaStyle ={
@@ -290,7 +291,7 @@ const MultiInput = forwardRef((props, ref) => {
           {type == "textarea" ?
               <textarea 
                 className="form-control"
-                style={textAreaStyle}
+                style={textAreaStyle} 
                 ref = {inputRef}
                 onClick={(e)=>handleDropDownToggle(e)}
                 type={type}
@@ -298,6 +299,7 @@ const MultiInput = forwardRef((props, ref) => {
                 onChange={(e)=>handleInputChange(e.target.value)}
                 onBlur={(e)=>handleBlur(e.target.value)}
                 onDoubleClick={(e)=>handleDoubleClick(e.target.value)}
+                onWheel={(e) => e.preventDefault()}
                 {...inputProps}
                 >
             </textarea>
@@ -313,6 +315,7 @@ const MultiInput = forwardRef((props, ref) => {
                 onChange={(e)=>handleInputChange(e.target.value)}
                 onBlur={(e)=>handleBlur(e.target.value)}
                 onDoubleClick={(e)=>handleDoubleClick(e.target.value)}
+                onWheel={(e) => e.preventDefault()}
                 {...inputProps}
                 >
             </input>
@@ -327,6 +330,7 @@ const MultiInput = forwardRef((props, ref) => {
                 onChange={(e)=>handleInputChange(e.target.value)}
                 onBlur={(e)=>handleBlur(e.target.value)}
                 onDoubleClick={(e)=>handleDoubleClick(e.target.value)}
+                onWheel={(e) => e.preventDefault()}
                 {...inputProps}
                 >
             </input>

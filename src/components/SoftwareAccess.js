@@ -221,108 +221,135 @@ const handleReset = ()=>{
 
   const addIcon = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/icons/add_icon.png"
   const removeIcon = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/icons/delete_icon.png"
-
-  const [pageClass, setPageClass] = useState("container mt-5 animate__animated animate__fadeIn animate__duration-0.5s")
+  const pageClass = "flex-container animate__animated animate__fadeIn animate__duration-0.5s"
   
 
+  const contentContainerRef = useRef()
+  const [contentContainerTop,setContentContainerTop] = useState("")
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+  useEffect(()=>{
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+    };
+    // Listen for window resize events
+    window.addEventListener('resize', handleResize);
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  },[])
+
+  useEffect(()=> {
+    if (contentContainerRef.current) {
+      const { top } = contentContainerRef.current.getBoundingClientRect();
+      setContentContainerTop(top)
+      
+    }
+  },[contentContainerRef])
+
   return (
-    <div className = {pageClass}>
-      <div className="row">
-        <div className="col"></div>
+    <div className = {pageClass} style={{height:"100%", overflow:"hidden"}}>
+      
+      <div className="row" style={{height:"100%", overFlow: "hidden"}}>
+        <div className="d-none d-md-inline-flex col-3 col-xl-4" style={{height:"100%"}}></div>
 
-        <div className="col-lg-6">
+        <div className="col-12 col-md-6 col-xl-4">
           
-          <h1 className="text-left mb-3 border-bottom border-5">{pageName} Request</h1>
+          <div className="text-left mb-3 border-bottom border-5" style={{fontSize:"32px"}}>{pageName} Request</div>
           
-          <div className="d-flex flex-column bg-light border shadow p-3 rounded-2 justify-content-center">
-          
-          <form name='form' id="form" onSubmit={handleSubmit} className = "form-group" noValidate>
+          <form 
+            name='form' id="form" 
+            onSubmit={handleSubmit} 
+            className="d-flex flex-column bg-light border shadow rounded-3 p-3" 
+            noValidate>
             
-            <div className="form-floating mb-3">
-              <input 
-              id = "subject" 
-              name= "subject" 
-              className="form-control form-control text-primary" 
-              onChange={handleChange} 
-              placeholder="Provide a subject or headline for this request" 
-              value={initialFormData.subject}
-              required
-              ></input>
-              <label htmlFor="subject" className="form-label text-body-tertiary small">Summarize what you need</label>
-            </div>
-
-
-            <div className="form-floating mb-3">
-              <SuperInput
-                key={productRef}
-                id = "product" 
-                name="product"
-                list={products}
-                value={initialFormData.product}
-                valueColor="#2C7BFF"
-                onChange={handleChange} 
-                label={"Select a preferred supplier if known"}
-                required={true}
-                />
-              <div className="text-secondary small"><img src={addIcon} style={addIconStyle} onClick={(e)=>addProduct(e)}></img>Add product</div>
-            </div>
-
-
-            <div className="form-floating mb-3">
-              <SuperInput
-                key={supplierRef}
-                id = "supplier" 
-                name = "supplier" 
-                list={suppliers}
-                value={initialFormData.supplier}
-                valueColor="#2C7BFF"
-                onChange={handleChange} 
-                label={"Select a preferred supplier if known"}
-                required={true}
-                />
-              <div className="text-secondary small"><img src={addIcon} style={addIconStyle} onClick={(e)=>addSupplier(e)}></img>Add supplier</div>
-            </div>
-
-            <div className="form-group mb-3">
-
-             <h5>List the users that need access</h5>
-              <table className="table w-100 border rounded rounded-2">
-                <thead>
-                  <tr className="text-center text-small">
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th></th>
-                  </tr>
-                  <tr className="table-group-divider"></tr>
-                </thead>
-                <tbody className="table-group-divider text-small">
-                  {softwareUsers.map((user, index)=>(
-                    <tr key={index} id={`user_${index}`} ref={usernameRefs.current[index]}>
-                      <td><input id={`user_${index}_name`} name={`user_${index}_name`} className="form-control text-primary" onChange={(e)=>handleUserInput(e, index)} value={softwareUsers[index].name}{...inputRequired(index)}></input></td>
-                      <td><input id={`user_${index}_email`} name={`user_${index}_email`} className="form-control text-primary" type="email" onChange={(e)=>handleUserInput(e, index)} value={softwareUsers[index].email} {...inputRequired(index)}></input></td>
-                      <td id={`remove_user_${index}`} className="small bg-second"><img src={removeIcon} style={removeIconStyle} onClick={(e)=>removeUser(e, index)}></img></td>
-                    </tr>
-                  ))}
-                  <tr>
-                    <td colSpan="2" className="small bg-second" style={{background:"none"}}><img src={addIcon} style={addIconStyle} onClick={(e)=>addUser(e)}></img>Add user</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-    
+            {/* Button Group */}
             <div className="d-flex justify-content-center">
-              <div className="btn-group">
-                <button name= "backButton" className="btn btn-outline-secondary w-25" data-bs-toggle="button">Back</button>
-                <button name="nextButton" className="btn btn-primary w-25" data-bs-toggle="button" type="submit">Next</button>
+              <div className="d-flex w-100 justify-content-between">
+                <button name= "backButton" className="btn btn-outline-secondary" style={{width:"100px"}} data-bs-toggle="button" type="submit">Back</button>
+                <button name="nextButton" className="btn btn-primary" style={{width:"100px"}} data-bs-toggle="button" type="submit">Next</button>
               </div>
             </div>
-          </form>
+            
+            {/* Form inputs */}
+            <div className="d-flex flex-column mt-2" ref={contentContainerRef} style={{height: windowHeight-contentContainerTop-50, overflowY:"auto"}}>
+              <div className="form-floating mb-3">
+                <input 
+                id = "subject" 
+                name= "subject" 
+                className="form-control form-control text-primary" 
+                onChange={handleChange} 
+                placeholder="Provide a subject or headline for this request" 
+                value={initialFormData.subject}
+                required
+                ></input>
+                <label htmlFor="subject" className="form-label text-body-tertiary small">Summarize what you need</label>
+              </div>
 
-          </div>
+              <div className="form-floating mb-3">
+                <SuperInput
+                  key={productRef}
+                  id = "product" 
+                  name="product"
+                  list={products}
+                  value={initialFormData.product}
+                  valueColor="#2C7BFF"
+                  onChange={handleChange} 
+                  label={"Select a preferred supplier if known"}
+                  required={true}
+                  />
+                <div className="text-secondary small"><img src={addIcon} style={addIconStyle} onClick={(e)=>addProduct(e)}></img>Add product</div>
+              </div>
+
+              <div className="form-floating mb-3">
+                <SuperInput
+                  key={supplierRef}
+                  id = "supplier" 
+                  name = "supplier" 
+                  list={suppliers}
+                  value={initialFormData.supplier}
+                  valueColor="#2C7BFF"
+                  onChange={handleChange} 
+                  label={"Select a preferred supplier if known"}
+                  required={true}
+                  />
+                <div className="text-secondary small"><img src={addIcon} style={addIconStyle} onClick={(e)=>addSupplier(e)}></img>Add supplier</div>
+              </div>
+
+              <div className="form-group mb-3">
+
+              <h5>List the users that need access</h5>
+                <table className="table w-100 border rounded rounded-2">
+                  <thead>
+                    <tr className="text-center text-small">
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th></th>
+                    </tr>
+                    <tr className="table-group-divider"></tr>
+                  </thead>
+                  <tbody className="table-group-divider text-small">
+                    {softwareUsers.map((user, index)=>(
+                      <tr key={index} id={`user_${index}`} ref={usernameRefs.current[index]}>
+                        <td><input id={`user_${index}_name`} name={`user_${index}_name`} className="form-control text-primary" onChange={(e)=>handleUserInput(e, index)} value={softwareUsers[index].name}{...inputRequired(index)}></input></td>
+                        <td><input id={`user_${index}_email`} name={`user_${index}_email`} className="form-control text-primary" type="email" onChange={(e)=>handleUserInput(e, index)} value={softwareUsers[index].email} {...inputRequired(index)}></input></td>
+                        <td id={`remove_user_${index}`} className="small bg-second"><img src={removeIcon} style={removeIconStyle} onClick={(e)=>removeUser(e, index)}></img></td>
+                      </tr>
+                    ))}
+                    <tr>
+                      <td colSpan="2" className="small bg-second" style={{background:"none"}}><img src={addIcon} style={addIconStyle} onClick={(e)=>addUser(e)}></img>Add user</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </form>
+      
         </div>
         
-        <div className="col"></div> 
+        <div className="d-none d-md-inline-flex col-3 col-xl-4" style={{height:"100%"}}></div>
       </div>
     </div>
   )

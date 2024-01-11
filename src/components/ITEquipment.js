@@ -54,7 +54,6 @@ let formData = {}
       console.log("initialize items check")
       let x = JSON.stringify(Object.values(appData))
       if(x.search("items")>0){
-        console.log("items found")
         setItems(appData[page.data]["items"])
       }
     }
@@ -63,7 +62,7 @@ let formData = {}
 
     try{
       const response = await axios.get('/db/subList/spend_categories/subcategory/category/IT Equipment and Services')
-      const data = await response.data.data
+      const data = await response.data
       setCategoryData(data)
   
       let categorySet = new Set()
