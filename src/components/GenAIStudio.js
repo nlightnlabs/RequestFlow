@@ -5,7 +5,9 @@ import SummarizeDocument from './SummarizeDocument'
 import { scanInvoice } from './apis/axios'
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Document, Page, pdfjs } from 'react-pdf';
+import VideoPlayer from './VideoPlayer.js'
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
 
 
 const Gpt = (props) => {
@@ -131,6 +133,22 @@ const Gpt = (props) => {
         }
     }
 
+    // const videoRef = useRef(null);
+    // const [showVideo, setShowVideo] = useState(true)
+
+    //     useEffect(()=>{
+    //         // Play the video when the component mounts
+    //         videoRef.current.play();
+
+    //         // Pause the video after 5 seconds
+    //         const timeoutId = setTimeout(() => {
+    //         videoRef.current.pause();
+    //         }, 5000);
+
+    //         // Clear the timeout when the component unmounts
+    //         return () => clearTimeout(timeoutId);
+    //     },[])
+
 // This segment auto sizes the content height according to the window height
 const contentContainerRef = useRef();
 const [contentContainerHeight, setContentContainerHeight] = useState('');
@@ -187,17 +205,25 @@ useLayoutEffect(() => {
             <div 
                 className="d-flex flex-column p-3" 
                 style={{width: "250px", backgroundImage:"linear-gradient(0deg, rgb(150, 0, 150), rgb(0, 0, 150), rgb(0,150,0))", height: "100%"}}
-            >gen
+            >
                 <button id="askButton" className="btn btn-secondary mb-3"  onClick={(e)=>setTaskType("Ask Question")}>Ask Question</button>
                 <button id="summarizeDocumentButton" className="btn btn-secondary mb-3"  onClick={(e)=>setTaskType("Summarize Document")}>Summarize Document</button>
-                <button id="scanInvoiceButton" className="btn btn-secondary mb-3" onClick={(e)=>setTaskType("Scan Invoice")}>Scan Invoice</button>
                 <button id="generateImageButton" className="btn btn-secondary mb-3" onClick={(e)=>setTaskType("Generate Image")}>Generate Image</button>
+                <button id="scanInvoiceButton" className="btn btn-secondary mb-3" onClick={(e)=>setTaskType("Scan Invoice")}>Scan Invoice</button>
+                <button id="generateImageButton" className="btn btn-secondary mb-3" onClick={(e)=>setTaskType("Generate Image")}>Create Contract</button>
+                <button id="generateImageButton" className="btn btn-secondary mb-3" onClick={(e)=>setTaskType("Generate Image")}>Analyze Spend</button>
             </div>
-
-        <div className="d-flex bg-dark  flex-fill flex-column" 
-            style={{height: "100%", width: "100%", overflowY: "hidden", backgroundImage:"linear-gradient(0deg, rgb(50, 50, 50), rgb(100, 100, 100))"}}
             
+            <div className="d-flex  flex-fill flex-column animate__animated animate__fadeIn animate__duration-0.5s" 
+            style={{height: "80%", width: "100%", overflowY: "hidden"}}
             >
+            
+            {/* <div style={{position: "absolute", zIndex:-1}} className="animate__animated animate__fadeIn animate__duration-0.5s">
+                <video ref={videoRef} width="1920" height="1080" controls autoPlay muted >
+                    <source src="https://nlightnlabs01.s3.us-west-1.amazonaws.com/videos/GenAI+Video.mp4" type="video/mp4" />
+                </video>
+            </div> */}
+
             <div className = "d-flex justify-content-center" style={{fontSize: "24px", color: "white", fontWeight: "bold"}}>{taskType}</div>
             
             {(taskType=="Ask Question" || taskType=="Generate Image") &&
@@ -288,7 +314,7 @@ useLayoutEffect(() => {
             }
 
            
-        </div>
+            </div>
             {
                 waiting && 
                 <div className="d-flex bg-light shadow p-3 text-center text-danger fw-bold border border-3 rounded-3" style={{position: "absolute", height: window.innerHeight/2-200, width: window.innerWidth, top: "30vh"}}>

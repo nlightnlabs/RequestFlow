@@ -3,7 +3,7 @@ console.log(`Environment: ${process.env.NODE_ENV}`);
 
 export const baseURL = process.env.NODE_ENV==="production" ? "https://nlightnlabs.net" : "http://localhost:3001"
 
-const dbUrl = axios.create({
+export const dbUrl = axios.create({
   baseURL,
 })
 
@@ -165,6 +165,7 @@ export const resetPassword = async (req)=>{
     //console.log(error)
   }
 }
+
 
 //Send Email
 export const sendEmail = async (req, res)=>{

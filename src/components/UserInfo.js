@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext, useRef} from 'react'
 import { Context } from "./Context.js"
-import axios from './apis/axios.js'
+import {dbUrl} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css'
 
@@ -129,7 +129,7 @@ const UserInfo = () => {
               // 'Authorization': 'Bearer yourAccessToken',
             }
             try{
-              const sendUserDatatoDb = await axios.post('/db/addUser',{params}, {headers})
+              const sendUserDatatoDb = await dbUrl.post('/db/addUser',{params}, {headers})
               const response = await sendUserDatatoDb.data
               console.log(response)
               if(response =="exists"){
@@ -153,11 +153,10 @@ const UserInfo = () => {
 }
 
 const getBusinessUnits = async ()=>{
-    const response = await axios.get("/db/table/business_units")
-    const data = await response.data
+    const response = await dbUrl.get("/db/table/business_units")
     
     let businessUnitSet = new Set()
-      await data.forEach(item=>{
+      response.data.data.forEach(item=>{
         businessUnitSet.add(item.name)
       })
       let businessUnitList = [...businessUnitSet]
