@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useContext, useRef} from 'react'
-import { useNavigate } from 'react-router'
 import { Context } from "./Context.js"
 import { getRecord, sendEmail} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -37,7 +36,6 @@ const ForgotPassword = () => {
 
 
   let formData = {}
-  const navigate= useNavigate()
 
   const [formClassList, setFormClassList] = useState("form-group")
   const formRef = useRef()
@@ -96,6 +94,7 @@ const ForgotPassword = () => {
 
 
     if(e.nativeEvent.submitter.name==="backButton"){
+   
       setFormClassList("form-group")
       let nextPage = "Log In"
       setPageList([...pageList,nextPage])
@@ -113,7 +112,7 @@ const ForgotPassword = () => {
          const to = email
           const subject = "Password Reset"
           const message = "This is a response to your request to reset your password.  Please click the button below."
-          const htmlPage = `<h3>Password Reset</h3><p>This is a response to your request to reset your password.  Please click the button below.</p><button onClick="https://nlightnlabs.net/RequestFlow">Reset Password</button>`
+          const htmlPage = `<h3>Password Reset</h3><p>This is a response to your request to reset your password.  Please click the button below.</p><button onClick="https://nlightnlabs.net/RequestFlow/ResetPassword">Reset Password</button>`
 
           const params = {
             to: to,
@@ -174,7 +173,7 @@ const ForgotPassword = () => {
           
           <div className="d-flex flex-column bg-light border shadow shadow p-3 rounded-2 justify-content-center">
           
-          <form ref={formRef} name='form' id="form" onSubmit={handleSubmit} className={formClassList}>
+          <form ref={formRef} name='form' id="form" onSubmit={handleSubmit} className={formClassList} noValidate>
             
             <div className="form-floating mb-3">
               <input id = "email" name= "email" type="email" className="form-control form-control text-primary" onChange={handleChange} placeholder="Username" required></input>

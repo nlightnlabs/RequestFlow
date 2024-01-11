@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useContext, useRef} from 'react'
-import { useNavigate } from 'react-router'
 import { Context } from "./Context.js"
 import axios from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -38,7 +37,6 @@ const Login = () => {
 },[])
 
   let formData = {}
-  const navigate = useNavigate()
 
   const [formClassList, setFormClassList] = useState("form-group")
   const formRef = useRef()
