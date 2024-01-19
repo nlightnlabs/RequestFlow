@@ -164,6 +164,14 @@ const handleReset = ()=>{
           
           <form ref={formRef} name='form' id="form" onSubmit={handleSubmit} className={formClassList} noValidate>
             
+            {/* Button Group */}
+            <div className="d-flex justify-content-center mb-3">
+              <div className="d-flex w-100 justify-content-between">
+                <button name= "backButton" className="btn btn-outline-secondary" style={{width:"100px"}} data-bs-toggle="button" type="submit">Back</button>
+                <button name="nextButton" className="btn btn-primary" style={{width:"100px"}} data-bs-toggle="button" type="submit">Next</button>
+              </div>
+            </div>
+
             <div className="form-floating mb-3">
               <input id = "subject" name= "subject" className="form-control form-control text-primary" value={initialFormData.subject} onChange={handleChange} placeholder="Provide a subject or headline for this request" required></input>
               <label htmlFor="subject" className="form-label text-body-tertiary small">Summarize what you need</label>
@@ -211,7 +219,7 @@ const handleReset = ()=>{
               <label htmlFor="details" className="form-label text-body-tertiary small">Describe what you need in detail</label>
             </div>
     
-            <div className="d-flex flex-column justify-content-center">
+            {/* <div className="d-flex flex-column justify-content-center">
               <div className="d-flex justify-content-center">
                 <div className="btn-group">
                   <button name= "backButton" className="btn btn-outline-secondary" data-bs-toggle="button">Back</button>
@@ -221,7 +229,7 @@ const handleReset = ()=>{
               <div className="d-flex justify-content-center">
                 <button className="btn btn-light text-center mt-1 text-body-secondary d-block" style={{cursor: "pointer"}} onClick={handleReset}>Reset</button>
               </div>
-            </div>
+            </div> */}
             
           </form>
           </div>

@@ -3,10 +3,11 @@ import React, {useState, useEffect, useRef, createRef} from 'react'
 import { toProperCase } from './functions/formatValue.js';
 import MultiInput from './MultiInput.js';
 import {generalIcons} from './apis/icons'
-import axios,{updateRecord, getRecord, getRecords, addRecord} from './apis/axios.js'
+import axios,{updateRecord, getRecord, getRecords, getValue, getList, updateActivityLog} from './apis/axios.js'
 import Attachments from './Attachments.js';
 import TableInput from './TableInput.js';
 import { rootPath } from './apis/fileServer'
+
 
 const DataEntryForm = (props) => {
 
@@ -15,11 +16,15 @@ const DataEntryForm = (props) => {
     const tableName = props.tableName
     const recordId = props.recordId
     const userId = props.userId
+    const updateParent = props.updateParent || null
     const updateParentStates = props.updateParentStates
+    const [formData, setFormData] = useState();
+	  const [userData, setUserData] = useState(props.user || {});
+    const [appData, setAppData] = useState(props.appData || []);
 
+	  const setUploadFilesRef = props.setUploadFilesRef;
     const [initialFormData, setInitialFormData] = useState({})
-    const [formData, setFormData] = useState({})
-    const [userData, setUserData] = useState({})
+    const [user, setUser] = useState({})
 
     const [sections, setSections] = useState([])
     const [formElements, setFormElements] = useState([]);
@@ -34,16 +39,19 @@ const DataEntryForm = (props) => {
     const [attachments, setAttachments] = useState([])
     const [lineItems, setLineItems] = useState([])
 
-    const getFormData = async()=>{
-      const params = {
-        tableName: tableName,
-        recordId: recordId,
-        idField: "id",
-      }
-      const response = await getRecord(params)
-      setInitialFormData(response)
-      setFormData(response)
-    }
+    const[initialValues, setInitialValues] = useState(false)
+
+
+    useEffect(()=>{
+      getUserData();
+      getFormFields();
+    },[])
+
+    // useEffect(()=>{
+    //   calculateForm(formElements, formData)
+    // },[])
+
+    
 
     const getUserData = async()=>{
       const params = {
@@ -51,36 +59,99 @@ const DataEntryForm = (props) => {
         recordId: userId,
         idField: "id",
       }
-      const response = await getRecord(params)
-      setUserData(response)
+      const user = await getRecord(params)
+      console.log(user)
+      setUser(user)
     }
+
 
     const getFormFields = async () => {
       const params = {
         tableName: "forms",
-        recordId: formName,
-        idField: "ui_form_name",
-      }
-
+        conditionalField: "ui_form_name",
+        condition: formName,
+      };
+    
       try {
-        const data = await getRecords(params)
-        // console.log(data)
-
-        // Saving the state.  This is always consistent.
-        setFormElements(data);
-        
+        const formFields = await getRecords(params);
+    
+        // Saving the state. This is always consistent.
+        setFormElements(formFields);
+        console.log(formFields)
+    
         // Calling a function to dynamically pull multiple dropdown lists from db
-        getDropDownLists(data) 
-
-        //Get the sections data
-        getSections(data)
-
+        getDropDownLists(formFields);
+    
+        // Get the sections data
+        getSections(formFields);
+    
+        // Setup initial formdata with default values if any
+        await getFormData(formFields); // Wait for getFormData to complete
+    
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
+    
+    
+    const getFormData = async (formFields) => {
+      const updatedFormFields = formFields;
+      
+      try {
+        
+        const params = {
+          tableName: tableName,
+          recordId: recordId,
+          idField: "id",
+        };
+    
+        const formData = await getRecord(params);
+        console.log(formData);
+        setInitialFormData(formData);
+        setFormData(formData);
+        calculateForm(updatedFormFields, formData);
 
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+      }
+    };
+    
+    const calculateForm = async (formFields, updatedFormData) => {
+      let formData = updatedFormData;
+      console.log(formData);
+      console.log(formData.ship_to_location);
+  
+      formFields.map(async (item) => {
+        
+        console.log(item)
+        let value = formData[item.ui_id];
+  
+        try {
+          if (item.ui_calculation_type == "formula") {
+            value = eval(item.ui_calculated_value);
+          }
+  
+          if(item.ui_calculation_type == "fetch"){
+           const tableName = item.ui_reference_data_table;
+           const fieldName = item.ui_reference_data_field;
+           const conditionalField = item.ui_reference_data_conditional_field
+           const conditionalValue = eval(item.ui_reference_data_conditional_value)
+           value = await getValue(tableName,fieldName,conditionalField,conditionalValue)
+          }
+          updatedFormData = { ...updatedFormData, ...{ [item.ui_id]: value } };
+          console.log({...formData, ...updatedFormData})
+          setFormData((prevState) => ({ ...prevState, ...updatedFormData }));
+          updateParent((prevState) => ({ ...prevState, ...updatedFormData }));
+          setInitialValues(true);
+        } catch (error) {
+          console.log(error);
+          console.log(item);
+        }
+      });
+    };
+    
     const getDropDownLists = async (data)=>{
+
       let tempDropdownLists = []
 
       if(data.length>0){
@@ -91,8 +162,8 @@ const DataEntryForm = (props) => {
             const getListItems = async (req, res)=>{
               
               try{
-                const response = await axios.get(`/db/list/${item.ui_reference_data_table}/${item.ui_reference_data_field}`); 
-                const listItems  = await response.data.data
+                const response = await getList(item.ui_reference_data_table,item.ui_reference_data_field); 
+                const listItems  = await response
                 
                 // Storing each drop down list in an object
                 let listData = {name:`${item.ui_id}_list`, listItems: listItems}
@@ -110,6 +181,7 @@ const DataEntryForm = (props) => {
         })
       }
     }
+
       
     const getSections = (data)=>{
       
@@ -192,6 +264,8 @@ const DataEntryForm = (props) => {
           recordToSendToDb = formDataWithAttachments
           updatesToSendToDb = updatedDataWithAttachments
         }
+        console.log(recordToSendToDb)
+        console.log(updatesToSendToDb)
         
         // Stringify all fields that hold arrays or javascript objects to flatting the data
         Object.keys(recordToSendToDb).map(key=>{
@@ -199,7 +273,7 @@ const DataEntryForm = (props) => {
             recordToSendToDb = {...recordToSendToDb, ...{[key]:JSON.stringify(recordToSendToDb[key])}}
           }
         })
-        // console.log(recordToSendToDb)
+        console.log(recordToSendToDb)
      
         //update database table with updated record data
           const params = {
@@ -209,36 +283,33 @@ const DataEntryForm = (props) => {
               formData: recordToSendToDb
           }
           const updatedRecordFromDb= await updateRecord(params)
-          // console.log(updatedRecordFromDb)
-
+          console.log(updatedRecordFromDb)
           let match = true
+          if(updatedRecordFromDb.id!==recordToSendToDb.id){
+            match=false
+          }
           // Verify that the record has been updated in the database
-          Object.keys(recordToSendToDb).map(field=>{
-              // console.log(`recordToSendToDb[field]: ${recordToSendToDb[field]}`)
-              console.log(`updatedRecordFromDb[field]: ${updatedRecordFromDb[field]}`)
-              if(recordToSendToDb[field] && updatedRecordFromDb[field] && recordToSendToDb[field]!=="record_created" && 
-              recordToSendToDb[field].toString() !== updatedRecordFromDb[field].toString()){
-                // console.log(`recordToSendToDb; ${JSON.stringify(recordToSendToDb[field])}`)
-                // console.log(`updatedRecordFromDb: ${JSON.stringify(updatedRecordFromDb[field])}`)
-                match=false
-                return match
-              }
-          })
-              
+          // Object.keys(recordToSendToDb).map(field=>{
+          //     // console.log(`recordToSendToDb[field]: ${recordToSendToDb[field]}`)
+          //     console.log(`updatedRecordFromDb[field]: ${updatedRecordFromDb[field]}`)
+          //     if(recordToSendToDb[field] && updatedRecordFromDb[field] && recordToSendToDb[field]!=="record_created" && 
+          //     recordToSendToDb[field].toString() !== updatedRecordFromDb[field].toString()){
+          //       console.log(`recordToSendToDb; ${JSON.stringify(recordToSendToDb[field])}`)
+          //       console.log(`updatedRecordFromDb: ${JSON.stringify(updatedRecordFromDb[field])}`)
+          //       match=false
+          //       return match
+          //     }
+          // })
+
           if(match){
 
               setFormData(recordToSendToDb)
               setInitialData(recordToSendToDb)
               alert("Record updated")
-              getFormData()
+              getFormData(formElements)
 
               // Update activity log
-              const params = {
-                tableName: "activities",
-                columns: ["app","record_id","user","description"],
-                values: [tableName,recordId,userData.email,JSON.stringify(updatesToSendToDb)]
-              }
-              const updateActivityLog = await addRecord(params)
+              updateActivityLog("orders", recordId, userData.email, JSON.stringify(updatesToSendToDb))
 
               //Refresh UI in Parent object
               updateParentStates.forEach(func=>{
@@ -254,7 +325,6 @@ const DataEntryForm = (props) => {
           }
       }
 
-
     const iconStyle ={
       maxHeight: 30,
       maxWidth: 30,
@@ -266,17 +336,12 @@ const DataEntryForm = (props) => {
       
       const {name, value} = e.target
       const elementName = name.name 
-      // console.log({...updatedData,...{[elementName]:value}})
       setUpdatedData({...updatedData,...{[elementName]:value}})
       setFormData({...formData,...{[elementName]:value}})
+      let updatedFormData = { ...formData, ...{ [elementName]: value } };
+      calculateForm(formElements, updatedFormData);
     }
 
-
-    const handleClick = (e)=> {}
-    const handleBlur = (e)=> {}
-    const handleHover = (e)=> {}
-    const handleAddData= (e)=>{}
-    const handleSubmit = (e)=>{}
 
     const editProps = ()=>{
       if(allowEdit){
@@ -307,14 +372,6 @@ const DataEntryForm = (props) => {
       fontSize: 24,
       fontWeight: 'normal'
     }
-
-
-    useEffect(()=>{
-      getFormFields();
-      getFormData();
-      getUserData();
-    },[props])
-  
 
     useEffect(()=>{
       editProps()
@@ -347,7 +404,7 @@ return(
             onClick={(e)=>handleSave(e)}>
           </img>
       </div>
-
+      
       <div className="d-flex flex-column" style={{height: "70vh", overflowY: "auto",overflowX: "hidden"}}>
         {sections.map((section, sectionIndex)=>(
           section.name  !==null && section.visible ? 
@@ -358,7 +415,7 @@ return(
                     item.ui_form_section === section.name && item.ui_component_visible && (item.ui_component_type === "input" || item.ui_component_type=="select") && item.ui_input_type!=="file"?
                     <div key={index} className="d-flex flex-column mb-3">
                       <MultiInput
-                      id={{id: item.ui_id, section: item.ui_form_section}} 
+                      id={`${{id: item.ui_id, section: item.ui_form_section}}`} 
                       name={{name: item.ui_name, section: item.ui_form_section}}
                       className={item.ui_classname}
                       label={item.ui_label}
@@ -384,7 +441,7 @@ return(
                     <Attachments 
                       id={{id: item.ui_id, section: item.ui_form_section}} 
                       name={{name: item.ui_name, section: item.ui_form_section}}
-                      onChange = {(e)=>handleChange(e)}
+                      onChange = {handleChange}
                       valueColor = {item.ui_color}
                       currentAttachments = {initialFormData.attachments}
                       prepareAttachments = {prepareAttachments}
@@ -398,7 +455,7 @@ return(
                       <TableInput
                         id={{id: item.ui_id, section: item.ui_form_section}} 
                         name={{name: item.ui_name, section: item.ui_form_section}}
-                        onChange = {(e)=>handleChange(e)}
+                        onChange = {handleChange}
                         valueColor = {item.ui_color}
                         valueSize = {item.ui_font_size}
                         valueWeight = {item.ui_font_weight}

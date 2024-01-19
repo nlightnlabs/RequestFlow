@@ -11,9 +11,6 @@ export const dbUrl = axios.create({
   baseURL,
 })
 
-
-
-
 //General Query
 export const getData = async (query, res)=>{
   try{
@@ -31,7 +28,7 @@ export const getData = async (query, res)=>{
 export const getTable = async (tableName, res)=>{
     try{
       const result = await dbUrl.get(`/db/table/${tableName}`)
-      console.log(result.data)
+      // console.log(result.data)
       const {data,dataTypes} = await result.data
       return ({data,dataTypes})
     }catch(error){
@@ -40,13 +37,23 @@ export const getTable = async (tableName, res)=>{
   }
 
   //Get List
-  export const getList = async (tableName,fieldName, res)=>{
+  export const getList = async (tableName,fieldName)=>{
     try{
       const result = await dbUrl.get(`/db/list/${tableName}/${fieldName}`)
       const data = await result.data
       return (data)
     }catch(error){
-      console.log(error)
+      // console.log(error)
+    }
+  }
+
+  export const getConditionalList = async (tableName,fieldName,conditionalField, condition)=>{
+    try{
+      const result = await dbUrl.get(`/db/subList/${tableName}/${fieldName}/${conditionalField}/${condition}`)
+      const data = await result.data
+      return (data)
+    }catch(error){
+      // console.log(error)
     }
   }
 
@@ -71,10 +78,11 @@ export const getRecord = async (req, res)=>{
 
 //Get Records
 export const getRecords = async (req, res)=>{
+  
   const params = {
       tableName: req.tableName,
-      recordId: req.recordId,
-      idField: req.idField
+      conditionalField: req.conditionalField,
+      condition: req.condition
   }
 
   try{
@@ -87,14 +95,26 @@ export const getRecords = async (req, res)=>{
   }
 }
 
+//Look up a single value
+export const getValue = async (tableName,lookupField, conditionalField,conditionalValue)=>{
+  
+  try{
+    const result = await dbUrl.get(`/db/value/${tableName}/${lookupField}/${conditionalField}/${conditionalValue}`)
+    //console.log(result)
+    const data = await result.data
+    return (data)
+  }catch(error){
+    //console.log(error)
+  }
+}
+
 
 //Create New Record
-export const addRecord = async (req, res)=>{
+export const addRecord = async (tableName, formData)=>{
 
     const params = {
-        tableName: req.tableName,
-        columns: req.columns,
-        values: req.values
+        tableName: tableName,
+        formData: formData
     }
 
     try{
@@ -146,6 +166,25 @@ export const deleteRecord = async (req, res)=>{
   }
 }
 
+export const runFilter = async(tableName, filterList)=>{
+  const params={
+    tableName: tableName,
+    filterList: filterList
+  }
+  try{
+    console.log(params)
+    const result = await dbUrl.post("/db/filterTable",{params})
+    // console.log(result)
+
+    const {data,dataTypes} = await result.data
+    return ({data,dataTypes})
+
+  }catch(error){
+    console.log(error)
+    return error
+  }
+}
+
 
 //Reset User Password
 export const resetPassword = async (req)=>{
@@ -164,6 +203,32 @@ export const resetPassword = async (req)=>{
     return (data)
   }catch(error){
     //console.log(error)
+  }
+}
+
+//Update Activity Log
+
+export const updateActivityLog = async(app, recordId, userEmail, description)=>{
+  
+  const formData = {
+    "app":app,
+    "record_id":recordId,
+    "user":userEmail,
+    "description":description
+  }
+  
+  const params = {
+    tableName: "activities",
+    formData:formData
+  }
+  
+  try{
+    const result = await dbUrl.post("/db/addRecord",{params})
+    // console.log(result)
+    const data = await result.data
+    return (data)
+  }catch(error){
+    // console.log(error)
   }
 }
 
@@ -200,7 +265,7 @@ export const askGPT = async (req)=>{
     const result = await dbUrl.post("/gpt",{params})
     return (result)
   }catch(error){
-    console.log(error)
+    // console.log(error)
   }
 }
 
@@ -226,7 +291,7 @@ export const scanInvoice = async ({args})=>{
   const {documentText, record} = args
 
   const prompt = `The following is an invoice received from a supplier: ${documentText}. Fill in the values in this javascript object: ${JSON.stringify(record)} based on the information in the invoice. Leave a value blank if it can not be determined based on the invoice document received. Return response as javascript object. Be sure to return a properly structured json object with closed brackets and array sub elements if needed.`
-  console.log(prompt)
+  // console.log(prompt)
 
   const params = {
     prompt: prompt
@@ -237,7 +302,7 @@ export const scanInvoice = async ({args})=>{
     console.log(JSON.parse(result.data))
     return (JSON.parse(result.data))
   }catch(error){
-    console.log(error)
+    // console.log(error)
   }
 }
 

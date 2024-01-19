@@ -203,6 +203,14 @@ const handleReset = ()=>{
           
           <form name='form' id="form" onSubmit={handleSubmit} className = "form-group" noValidate>
             
+            {/* Button Group */}
+            <div className="d-flex justify-content-center mb-3">
+              <div className="d-flex w-100 justify-content-between">
+                <button name= "backButton" className="btn btn-outline-secondary" style={{width:"100px"}} data-bs-toggle="button" type="submit">Back</button>
+                <button name="nextButton" className="btn btn-primary" style={{width:"100px"}} data-bs-toggle="button" type="submit">Next</button>
+              </div>
+            </div>
+
             <div className="form-floating mb-3">
               <input 
               id = "subject" 
@@ -256,12 +264,12 @@ const handleReset = ()=>{
               </table>
             </div>
 
-            <div className="d-flex justify-content-center">
+            {/* <div className="d-flex justify-content-center">
               <div className="btn-group">
                 <button name= "backButton" className="btn btn-outline-secondary w-25" data-bs-toggle="button">Back</button>
                 <button name="nextButton" className="btn btn-primary w-25" data-bs-toggle="button" type="submit">Next</button>
               </div>
-            </div>
+            </div> */}
           </form>
 
           </div>

@@ -53,7 +53,7 @@ const Header = () => {
 
     const getApps = async ()=>{
       const response = await getTable("apps")
-      console.log(response)
+      // console.log(response)
       setApps(response.data)
   }
 
@@ -66,9 +66,11 @@ const Header = () => {
 
     
     useEffect(()=>{
+      // setUser(localStorage.getItem('user'));
       getApps()
       initializeUserData()
-      console.log(Context)
+      // console.log(Context)
+
     },[appData, userLoggedIn])
 
     const homeIcon = `${generalIcons}/home_icon.png`
@@ -80,8 +82,7 @@ const Header = () => {
     }
 
   const handleMenuOption=(elem)=>{
-    
-    console.log(elem)
+  
 
     if(elem == "newRequestButton"){
       let nextPage = "Home"
@@ -109,6 +110,7 @@ const Header = () => {
       setPageName(nextPage)
     }
     if(elem == "signOutButton"){
+      localStorage.removeItem('user');
       let nextPage = "Log In"
       setPageList([nextPage])
       setPage(pages.filter(x=>x.name===nextPage)[0])

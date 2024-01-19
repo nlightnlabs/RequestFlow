@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext, useRef, createRef} from 'react'
 import { Context } from "./Context.js"
-import axios from './apis/axios.js'
+import axios, {getTable} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 import 'animate.css';
@@ -48,8 +48,8 @@ const AddProduct = () => {
 
 
   const getCategories = async ()=>{
-    const response = await axios.get('/db/table/spend_categories')
-    const data = await response.data.data
+    const response = await getTable('spend_categories')
+    const data = await response.data
     setCategoryData(data)
 
     let categorySet = new Set()
@@ -77,8 +77,8 @@ const AddProduct = () => {
 
 
   const getBusinesses = async ()=>{
-    const response = await axios.get('/db/list/data/getTable/businesses')
-    const data = await response.data.data
+    const response = await getTable('businesses')
+    const data = await response.data
     setBusinessData(data)
 
     let businessSet = new Set()
@@ -92,8 +92,8 @@ const AddProduct = () => {
   }
 
   const getUnitsOfMeasures = async ()=>{
-    const response = await axios.get('/db/table/units_of_measures')
-    const data = await response.data.data
+    const response = await getTable('units_of_measures')
+    const data = await response.data
     setUnitOfMeasuresData(data)
 
     let uomSet = new Set()

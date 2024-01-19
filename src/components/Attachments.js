@@ -6,7 +6,7 @@ const Attachments = (props) => {
     const id=props.id
     const name=props.name
     const onChange = props.onChange
-    const currentAttachments = props.currentAttachments || []
+    const currentAttachments = props.currentAttachments
     const prepareAttachments = props.prepareAttachments
     const userData = props.userData || []
     const [attachments, setAttachments] = useState([])
@@ -23,13 +23,24 @@ const Attachments = (props) => {
       multiple: true 
     }
 
-    const getAttachmentData=()=>{
-      if(currentAttachments.length>0 && Array.isArray(currentAttachments)){
-        setAttachments(currentAttachments)
+    const getAttachmentData=(attachmentString)=>{
+      console.log(attachmentString)
+      console.log(typeof attachmentString)
+        try{
+          if(attachmentString.length>0){
+            setAttachments(JSON.parse(attachmentString))
+          }
+        }catch(error){
+          console.log(error)
+        }
       }
-    }
+    
 
     let fileData=[]
+    useEffect(()=>{
+      getAttachmentData(props.currentAttachments)
+    },[props.currentAttachments])
+
 
     const handleChange = async (e)=>{ 
         
@@ -56,50 +67,49 @@ const Attachments = (props) => {
         prepareAttachments(fileData)
     }
 
-    useEffect(()=>{
-        getAttachmentData()
-    },[props.currentAttachments])
+    
 
   return (
-        <div className="form-group">
-            <label className="form-label">Attachments:</label>
-            <input 
-                id={id}
-                name={name}  
-                type="file" 
-                onChange={(e)=>handleChange(e)}
-                className="form-control"
-                multiple 
-                {...inputProps}
-                >    
-            </input>
-
-            {attachments.length>0? 
-                <div className="d-flex flex-column mt-1 p-2 text-primary border border-1 rounded-3">
-                {Array.isArray(attachments) && attachments.length>0 &&
-                <table className="table table-striped table-borderless p-0" style={{fontSize: 12}}>
-                  <thead className="position-sticky top-0">
-                    <tr className="position-sticky top-0 bg-light">
-                      <th scope="col" className="p-1">File Name</th>
-                      <th scope="col" className="p-1">Type</th>
-                      <th scope="col" className="p-1">Size</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {attachments.map((row,rowIndex)=>(
-                      <tr key={rowIndex}>
-                        <td className="p-1" style={{padding:0}}>{row.name}</td>
-                        <td className="p-1" style={{padding:0}}>{row.type}</td>
-                        <td className="p-1" style={{padding:0}}>{Math.round(Number(row.size)/1000,1)} KB</td>
-                      </tr>
-                  ))}
-                  </tbody>
-                </table>
-                }
-            </div>
-            :
-            null
-            }
+    <div className="form-group">
+      <label className="form-label">Attachments:</label>
+      <input 
+          id={id}
+          name={name}  
+          type="file" 
+          onChange={(e)=>handleChange(e)}
+          className="form-control"
+          multiple 
+          {...inputProps}
+          >    
+      </input>
+      {attachments.length>0? 
+          <div className="d-flex flex-column mt-1 p-2 text-primary border border-1 rounded-3">
+          {attachments.length>0 && Array.isArray(attachments) && 
+          <table className="table table-striped table-borderless p-0" style={{fontSize: 12}}>
+            <thead className="position-sticky top-0">
+              <tr className="position-sticky top-0 bg-light">
+                <th scope="col" className="p-1">File Name</th>
+                <th scope="col" className="p-1">Type</th>
+                <th scope="col" className="p-1">Size</th>
+              </tr>
+            </thead>
+            <tbody>
+            {attachments.map((item,attIndex)=>(
+                <tr key={attIndex}>
+                  <td className="p-1" style={{padding:0, color: "blue", fontWeight: "bold"}}>
+                    {(item.url).length>1 ? <a href={item.url}>{item.name}</a> : item.name}
+                  </td>
+                  <td className="p-1" style={{padding:0}}>{item.type}</td>
+                  <td className="p-1" style={{padding:0}}>{Math.round(Number(item.size)/1000,1)} KB</td>
+                </tr>
+            ))}
+            </tbody>
+          </table>
+          }
+      </div>
+      :
+      null
+      }
     </div>
   )
 }

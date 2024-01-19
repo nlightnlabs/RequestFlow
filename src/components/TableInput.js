@@ -123,10 +123,13 @@ const TableInput = (props) => {
   const removeIcon = `${generalIcons}/delete_icon.png`  
 
   const tableCellStyle = {
-    fontSize: 14,
+    fontSize: 12,
     padding: 2,
     color: valueColor || "black",
-    width: `${Math.ceil(Math.ceil(1/(Object.keys(lineItems[0]).length)*100))}%`,
+    // width: Number(`${Math.ceil(Math.ceil(1/(Object.keys(lineItems[0]).length)*100))}%`),
+    width: "auto",
+    minWidth: "100px",
+    maxWidth: "200px",
     get height(){return this.fontSize+2*this.padding}
   }
 
@@ -147,8 +150,8 @@ const TableInput = (props) => {
 
 
   return (
-    <div className="d-flex flex-column mb-3">
-        <table ref={tableRef} className="table w-100 p-0 table-borderless rounded rounded-2">
+    <div className="d-flex flex-column mb-3 overflow-auto">
+        <table ref={tableRef} className="table w-100 p-0 table-borderless rounded rounded-2" style={{fontSize: "12px"}}>
           <thead>
             <tr className="text-center text-small">
             {Object.keys(lineItems[0]).map((field, col_index)=>(

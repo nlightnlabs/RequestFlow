@@ -12,6 +12,7 @@ const Table = (props) => {
 
     const userData = props.userData;
     const tableName = props.tableName || ""
+    const formName = props.formName || ""
     const [tableData, setTableData] = useState([]);
     const [fields, setFields] = useState([])
     const [recordId, setSelectedRecordId] = useState(0)
@@ -24,7 +25,7 @@ const Table = (props) => {
       let fieldList = []
         if(response.data.length>0){
           Object.keys(response.data[0]).map((field,index)=>{
-            fieldList.push({headerName: toProperCase(field.replaceAll("_"," ")), field: field, filter: true, color: "lightblue"})
+            fieldList.push({headerName: toProperCase(field.replaceAll("_"," ")), field: field, filter: true})
         })
           setFields(fieldList)
         }
@@ -37,7 +38,7 @@ const Table = (props) => {
       
   useEffect(()=>{
     getTableData()
-  },[props.tableName])
+  },[])
 
 
     const onCellClicked = (e) => {
@@ -46,7 +47,7 @@ const Table = (props) => {
     }
   
   return (
-      <div className="ag-theme-quartz animate__animated animate__fadeIn animate__duration-0.5s" style={{ height: "100%", width: "100%" }}>
+      <div className="ag-theme-quartz animate__animated animate__fadeIn animate__duration-0.5s" style={{fontSize:"12px", height: "100%", width: "100%" }}>
         <AgGridReact 
           rowData={tableData} 
           columnDefs={fields} 
@@ -60,6 +61,7 @@ const Table = (props) => {
                 tableName={tableName}
                 recordId={recordId}
                 tableData={tableData}
+                formName={formName}
                 userData = {userData}
                 setShowRecordDetails = {setShowRecordDetails}
                 refreshTable = {setTableData}

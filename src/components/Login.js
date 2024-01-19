@@ -158,7 +158,7 @@ const Login = () => {
             
             <div className="form-floating mb-3">
               <input id = "email" name= "email" type="email" className="form-control form-control text-primary" onChange={handleChange} placeholder="Username"></input>
-              <label htmlFor="username" className="form-label text-body-tertiary small">Email</label>
+              <label htmlFor="email" className="form-label text-body-tertiary small">Email</label>
             </div>
 
             <div className="form-floating mb-3">

@@ -20,8 +20,10 @@ export const ContextProvider = ({children}) =>{
     const generalIcons = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/icons"
     const [apps, setApps] = useState([])
     const [selectedApp, setSelectedApp] = useState("")
+    const [currency, setCurrency] = useState("United States Dollar")
+    const [currencySymbol, setCurrencySymbol] = useState("$")
+    const [language, setLanguage] = useState("English")
    
-
     const [pageList, setPageList] = useState([])
 
     const globalStates = {
@@ -56,7 +58,13 @@ export const ContextProvider = ({children}) =>{
         apps,
         setApps,
         selectedApp,
-        setSelectedApp
+        setSelectedApp,
+        currency,
+        setCurrency,
+        language,
+        setLanguage,
+        currencySymbol,
+        setCurrencySymbol
     }
 
     return(

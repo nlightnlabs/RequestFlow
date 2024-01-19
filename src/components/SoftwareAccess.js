@@ -127,6 +127,10 @@ const SoftwareAccess = () => {
     const form = e.target
 
     if(e.nativeEvent.submitter.name==="backButton"){
+      formData = {}
+      setInitialFormData(formData)
+      setAppData({...appData,[`${page.data}`]:formData})
+
       setFormClassList("form-group")
       let pageListCopy = pageList
       let thisPage = pageListCopy.splice(-1)
@@ -149,6 +153,7 @@ const SoftwareAccess = () => {
           setAppData({...appData, request_summary})
 
           let nextPage = "Additional Info"
+          alert(nextPage)
           setPage(pages.filter(x=>x.name===nextPage)[0])
           setPageList([...pageList,nextPage])
           setPageName(nextPage)
@@ -200,7 +205,6 @@ const handleReset = ()=>{
         softwareUsers.filter(user => softwareUsers.indexOf(user) !== index)
       );
     }
-
   }
 
   useEffect(()=>{
@@ -252,20 +256,20 @@ const handleReset = ()=>{
     <div className = {pageClass} style={{height:"100%", overflow:"hidden"}}>
       
       <div className="row" style={{height:"100%", overFlow: "hidden"}}>
-        <div className="d-none d-md-inline-flex col-3 col-xl-4" style={{height:"100%"}}></div>
+        <div className="d-none d-lg-inline-flex col-lg-3" style={{height:"100%"}}></div>
 
-        <div className="col-12 col-md-6 col-xl-4">
+        <div className="col-12 col-lg-6" style={{height: "100%"}}>
           
           <div className="text-left mb-3 border-bottom border-5" style={{fontSize:"32px"}}>{pageName} Request</div>
           
-          <form 
+          <form style={{height: "100%", overflowY:"auto"}}
             name='form' id="form" 
             onSubmit={handleSubmit} 
-            className="d-flex flex-column bg-light border shadow rounded-3 p-3" 
+            className="d-flex flex-column bg-light border shadow rounded-3 p-3 mb-3" 
             noValidate>
             
             {/* Button Group */}
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center mb-3">
               <div className="d-flex w-100 justify-content-between">
                 <button name= "backButton" className="btn btn-outline-secondary" style={{width:"100px"}} data-bs-toggle="button" type="submit">Back</button>
                 <button name="nextButton" className="btn btn-primary" style={{width:"100px"}} data-bs-toggle="button" type="submit">Next</button>
@@ -349,7 +353,7 @@ const handleReset = ()=>{
       
         </div>
         
-        <div className="d-none d-md-inline-flex col-3 col-xl-4" style={{height:"100%"}}></div>
+        <div className="d-none d-lg-inline-flex col-lg-3" style={{height:"100%"}}></div>
       </div>
     </div>
   )

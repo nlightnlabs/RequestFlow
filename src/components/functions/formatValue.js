@@ -112,3 +112,11 @@ export const UTCToLocalDate =(utcDateString)=>{
   const localTime = new Date(utcDate.getTime() - timezoneOffset * 60000);
   return localTime.toLocaleString().slice(0,localTime.toLocaleString().search(","));
 }
+
+export const formatDateInput = (inputValue)=>{
+  let dateValue = new Date(inputValue);  
+  let dd = String(dateValue.getDate()).padStart(2, '0'); 
+  let mm = String(dateValue.getMonth() + 1).padStart(2, '0'); let yyyy = dateValue.getFullYear(); 
+  let formattedDate = yyyy + '-' + mm + '-' + dd; return formattedDate;
+  return formattedDate
+}

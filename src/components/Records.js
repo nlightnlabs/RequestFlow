@@ -46,11 +46,13 @@ const Requests = (props) => {
   const [showTable, setShowTable] = useState(true)
   const [showCharts, setShowCharts] = useState(true)
 
+  const formName = apps.find(item=>item.name===selectedApp).edit_form_name || ""
+
   const chartsSectionRef = useRef(null)
   const [chartsSectionWindowSize, setChartsSectionWindowSize] = useState({})
 
   const getData = async (req, res)=>{
- 
+    console.log(tableName)
     const response = await getTable(tableName)
     console.log(response.data)
 
@@ -116,6 +118,7 @@ const [pageClass, setPageClass] = useState("flex-container flex-column animate__
               <Table 
                 userData={appData.user_info}
                 tableName={tableName}
+                formName={formName}
                 />
             </div>
             }
@@ -126,6 +129,7 @@ const [pageClass, setPageClass] = useState("flex-container flex-column animate__
                 <List
                   tableName={tableName}
                   userData={appData.user_info}
+                  formName={formName}
                 />
             </div>
             }

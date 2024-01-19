@@ -118,8 +118,8 @@ const Home = (props) => {
     setPageName(nextPage)
   }
 
-  const goToMarket =(e)=>{
-    const nextPage = "Market"
+  const goToCatalog =(e)=>{
+    const nextPage = "Catalog"
     setPage(pages.filter(x=>x.name===nextPage)[0])
     setPageList([...pageList,nextPage])
     setPageName(nextPage)
@@ -203,7 +203,7 @@ const Home = (props) => {
     setContentWidth(bannerWidth)
   },[bannerWidth])
 
-  const [imageClass, setImageClass] = useState("container animate__animated animate__fadeIn animate__duration-0.5s")
+  const [imageClass, setImageClass] = useState("animate__animated animate__fadeIn animate__duration-0.5s")
   const [pageClass, setPageClass] = useState("flex-container animate__animated animate__fadeIn animate__duration-0.5s")
 
 
@@ -255,10 +255,11 @@ const Home = (props) => {
 return(
     <div className={pageClass}>
 
-      <div className="d-flex justify-content-center mb-3">
+    {/* Search bar and shop menu */}
+    <div className="d-flex justify-content-center mb-3">
         {<div className="d-flex justify-content-between" style={{width: "50%"}}>
 
-          <div className="d-flex me-3 flex-column" onClick={(e)=>goToMarket(e)}>
+          <div className="d-flex me-3 flex-column" onClick={(e)=>goToCatalog(e)}>
                 <img style={iconStyle} src={`${appIcons}/shopping_icon.png`}></img>
                 <div style={{fontSize: 14, color: "gray"}}>Shop</div>
             </div>
@@ -276,22 +277,24 @@ return(
         </div>}
     </div>
         
-        
+    {/* News Banner */}
+    
     <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
       <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
-      style={{ maxHeight: "300px", width: "100%", overflowY: "hidden", margin: "0", padding: "0", cursor: "pointer"}}>
+      style={{ height: "auto", width: "100%", overflowY: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
           {newsData.length > 0 && (
               <img
                   src={highlightedNews.image_url}
                   alt={highlightedNews.headline}
                   className={imageClass}
-                  style={{ width: "100%", height: "auto", margin: "auto", padding: "0", objectFit: "cover", display: "block" }}
+                  style={{ width: "100%", height: "auto", margin: "auto"}}
                   onClick={(e)=>handleSelectedArticle(highlightedNews.id)}
               />
           )}
       </div>
   </div>
 
+    {/* Content section */}
     <div className="d-flex justify-content-center">
     {
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:contentContainerHeight, minHeight:"300px"}}>

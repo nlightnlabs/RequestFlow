@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 const RecordDetails = (props) => {
 
     const tableName = props.tableName || ""
+    const formName =  props.formName || ""
     const recordId = props.recordId || ""
     const userData = props.userData ||[]
     const tableData = props.tableData || []
@@ -19,6 +20,7 @@ const RecordDetails = (props) => {
     const [recordData, setRecordData] = useState([])
     const [fields, setFields] = useState([])
     const [activities, setActivities] = useState([])
+    const [formData, setFormData] = useState([])
 
     const getRecordData = async ()=>{
         const params={
@@ -26,6 +28,7 @@ const RecordDetails = (props) => {
             recordId,
             idField: 'id'
         }
+
         const returnedData = await getRecord(params)
         // console.log(returnedData)
         setRecordData(returnedData)
@@ -64,7 +67,7 @@ const RecordDetails = (props) => {
 
   return (
     <div className="flex flex-column" style={{height: "100%", overflow: "hidden"}}>
-        <div className="d-flex justify-content-end rounded-3" style={{backgroundColor: "rgb(230,240,250"}}>
+        <div className="d-flex justify-content-end rounded-3" style={{backgroundColor: "rgb(50,100,255"}}>
             <div className="button-group p-1">
                 <img src={`${generalIcons}/close_icon.png`} style={iconButtonStyle}  name="closeButton" onClick={(e)=>{setShowRecordDetails(false)}}></img>
             </div>
@@ -73,20 +76,21 @@ const RecordDetails = (props) => {
             <Workflow/>
         </div> */}
         <div className="row">
-            <div className="col-6 p-3" style={FormDataPanel}>
+            <div className="col-7 p-3" style={FormDataPanel}>
                 <DataEntryFrom
-                    formName = {tableName}
+                    formName = {formName}
                     tableName={tableName}
                     pageTitle={"Record Details"}
                     recordId={recordId}
                     formData={recordData}
                     fields = {fields}
                     userId={userData.id}
+                    updateParent = {setFormData}
                     updateParentStates = {[getActivityData, getRecordData]}
                 />
              </div>
             
-            <div className="col-6 p-3" style={ActivitiesPanel}>
+            <div className="col-5 p-3" style={ActivitiesPanel}>
                 <Activities
                     tableName={tableName}
                     pageTitle={"Activities"}

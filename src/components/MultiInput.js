@@ -1,6 +1,7 @@
 import React, {useState, useEffect, forwardRef, useRef} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { generalIcons } from './apis/icons';
+import {formatDateInput} from './functions/formatValue'
 
 const MultiInput = forwardRef((props, ref) => {
 
@@ -91,23 +92,23 @@ const MultiInput = forwardRef((props, ref) => {
     cursor: "pointer",
     fontSize: valueSize || 14,
     fontWeight: valueWeight || "normal",
-    color: valueColor || "black",
+    color: valueColor || "#5B9BD5",
     backgroundColor: valueFill || "white",
     outline: "none",
     width: width || "100%",
     border: border|| "1px solid rgb(235,235,235)",
-    get padding(){ if(padding){return padding}else{ return this.fontSize/2}}
+    get padding(){ if(padding){return padding}else{ return;}}
   }
 
   const textAreaStyle ={
     cursor: "pointer",
     fontSize: valueSize || 14,
     fontWeight: valueWeight || "normal",
-    color: valueColor || "black",
+    color: valueColor || "#5B9BD5",
     backgroundColor: valueFill || "white",
     outline: "none",
     width: width || "100%",
-    minHeight: 150,
+    minHeight: 100,
     border: border|| "1px solid rgb(235,235,235)",
   }
 
@@ -134,7 +135,7 @@ const MultiInput = forwardRef((props, ref) => {
     boxShadow: "5px 5px 5px lightgray",
     border: "1px solid lightgray",
     borderRadius: "0px 0px 5px 10px",
-    color: valueColor || "black",
+    color: valueColor || "#5B9BD5",
     zIndex: 999999
   }
 
@@ -223,6 +224,7 @@ const MultiInput = forwardRef((props, ref) => {
 
   const handleInputChange=(inputText)=>{
       
+      console.log(inputText)
       setValue(inputText)
       
       if(props.list && props.list.length>0){
@@ -260,11 +262,6 @@ const MultiInput = forwardRef((props, ref) => {
     }
   }
 
-
-  
-
-  
-
   const pageStyle = `
     input:disabled {
       background: #dddddd;
@@ -291,6 +288,8 @@ const MultiInput = forwardRef((props, ref) => {
           {type == "textarea" ?
               <textarea 
                 className="form-control"
+                id={id}
+                name={name}
                 style={textAreaStyle} 
                 ref = {inputRef}
                 onClick={(e)=>handleDropDownToggle(e)}
@@ -299,7 +298,6 @@ const MultiInput = forwardRef((props, ref) => {
                 onChange={(e)=>handleInputChange(e.target.value)}
                 onBlur={(e)=>handleBlur(e.target.value)}
                 onDoubleClick={(e)=>handleDoubleClick(e.target.value)}
-                onWheel={(e) => e.preventDefault()}
                 {...inputProps}
                 >
             </textarea>
@@ -307,6 +305,8 @@ const MultiInput = forwardRef((props, ref) => {
             type == "file" ?
               <input 
                 className="form-control"
+                id={id}
+                name={name}
                 style={textAreaStyle}
                 ref = {inputRef}
                 onClick={(e)=>handleDropDownToggle(e)}
@@ -315,27 +315,27 @@ const MultiInput = forwardRef((props, ref) => {
                 onChange={(e)=>handleInputChange(e.target.value)}
                 onBlur={(e)=>handleBlur(e.target.value)}
                 onDoubleClick={(e)=>handleDoubleClick(e.target.value)}
-                onWheel={(e) => e.preventDefault()}
                 {...inputProps}
                 >
             </input>
             :
             <input 
                 className="form-control"
+                id={id}
+                name={name}
                 style={inputStyle}
                 ref = {inputRef}
                 onClick={(e)=>handleDropDownToggle(e)}
                 type={type}
-                value={value}
+                value={type=="date"? formatDateInput(value):value}
                 onChange={(e)=>handleInputChange(e.target.value)}
                 onBlur={(e)=>handleBlur(e.target.value)}
                 onDoubleClick={(e)=>handleDoubleClick(e.target.value)}
-                onWheel={(e) => e.preventDefault()}
                 {...inputProps}
                 >
             </input>
             }
-            {label && label!=="" && <label className="form-label text-body-tertiary small" style={labelStyle}>{label}</label>}
+            {label && label!=="" && <label htmlFor={name} className="form-label text-body-tertiary small" style={labelStyle}>{label}</label>}
           </div>
         
 
