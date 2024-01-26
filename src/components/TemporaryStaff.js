@@ -34,6 +34,14 @@ const TemporaryStaff = () => {
     setInitialFormData
 } = useContext(Context)
 
+useEffect(()=>{
+  setPage(pages.filter(x=>x.name===pageName)[0])
+  setPageList([...pageList,pageName])
+  initializeItems()
+  getCategories()
+},[])
+
+
 let formData = {}
 
   const [categoryData, setCategoryData] = useState([])
@@ -175,14 +183,7 @@ const handleReset = ()=>{
 
   }
 
-  useEffect(()=>{
-    console.log(appData)
-    console.log(page)
-    console.log(pageList)
-
-    initializeItems()
-    getCategories()
-  },[])
+  
 
   const inputRequired = (index)=>{
     if(index==0){
@@ -195,6 +196,12 @@ const handleReset = ()=>{
 
   const [pageClass, setPageClass] = useState("container mt-5 animate__animated animate__fadeIn animate__duration-0.5s")
   
+  const sectionTitleStyle={
+    fontSize: 32,
+    fontWeight: "normal",
+    color: "#5B9BD5",
+    marginBottom: 10
+  }
 
   return (
     <div className = {pageClass}>
@@ -203,7 +210,7 @@ const handleReset = ()=>{
 
         <div className="col-lg-6">
           
-        <h1 className="text-left mb-3 border-bottom border-5">{pageName} Request</h1>
+        <div style={sectionTitleStyle}>{pageName}</div>
           
           <div className="d-flex flex-column bg-light border shadow p-3 rounded-2 justify-content-center">
           

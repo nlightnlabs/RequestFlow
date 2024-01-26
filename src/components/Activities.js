@@ -81,7 +81,7 @@ const handleFilter = ()=>{
                 Object.keys(dataFormat(item.description)).map((field, index)=>(
                   <div key={index}>
                       <span style={{fontWeight: 'bold', color: "#70AD47"}}>{`${toProperCase(field.replaceAll("_"," "))}`}</span>
-                      <span style={{color: 'gray'}}> udated to: </span>
+                      <span style={{color: 'gray'}}> updated to: </span>
                       {
                       Array.isArray(dataFormat(item.description)[field])?
                         <ul>

@@ -33,6 +33,13 @@ const PurchaseRequest = () => {
     setInitialFormData
   } = useContext(Context)
 
+  useEffect(()=>{
+    setPage(pages.filter(x=>x.name===pageName)[0])
+    setPageList([...pageList,pageName])
+    getBusinessData()
+    getCategories()
+  },[])
+  
   let formData = appData
 
   const [categoryData, setCategoryData] = useState([])
@@ -170,14 +177,13 @@ const handleReset = ()=>{
     setPageName(nextPage)
   }
 
-  useEffect(()=>{
-    console.log(appData)
-    console.log(page)
-    console.log(pageList)
-
-    getBusinessData()
-    getCategories()
-  },[])
+  const sectionTitleStyle={
+    fontSize: 32,
+    fontWeight: "normal",
+    color: "#5B9BD5",
+    marginBottom: 10
+  }
+  
 
 
   const [pageClass, setPageClass] = useState("container mt-5 animate__animated animate__fadeIn animate__duration-0.25s")
@@ -190,7 +196,7 @@ const handleReset = ()=>{
 
         <div className="col-lg-6">
           
-          <h1 className="text-left mb-3 border-bottom border-5">{pageName}</h1>
+        <div style={sectionTitleStyle}>{pageName}</div>
           
           <div className="d-flex flex-column bg-light border shadow shadow p-3 rounded-2 justify-content-center mb-3">
           
@@ -275,18 +281,7 @@ const handleReset = ()=>{
                   <label htmlFor="amount" className="form-label text-body-tertiary small">Provide an estimated amount if known</label>
                </div>
               </div>
-    
-            {/* <div className="d-flex flex-column justify-content-center z-1">
-              <div className="d-flex justify-content-center">
-                <div className="btn-group">
-                  <button name= "backButton" className="btn btn-outline-secondary" data-bs-toggle="button">Back</button>
-                  <button name="nextButton" className="btn btn-primary" data-bs-toggle="button" type="submit">Next</button>
-                </div>
-              </div>
-              <div className="d-flex justify-content-center">
-                <button className="btn btn-light text-center mt-1 text-body-secondary d-block" style={{cursor: "pointer"}} onClick={handleReset}>Reset</button>
-              </div>
-            </div> */}
+  
             
           </form>
           </div>

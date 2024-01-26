@@ -51,11 +51,6 @@ const Header = () => {
       email: "",
     })
 
-    const getApps = async ()=>{
-      const response = await getTable("apps")
-      // console.log(response)
-      setApps(response.data)
-  }
 
     const initializeUserData=()=>{
       let x = JSON.stringify(appData) 
@@ -64,13 +59,8 @@ const Header = () => {
       }
     }
 
-    
     useEffect(()=>{
-      // setUser(localStorage.getItem('user'));
-      getApps()
       initializeUserData()
-      // console.log(Context)
-
     },[appData, userLoggedIn])
 
     const homeIcon = `${generalIcons}/home_icon.png`
@@ -91,7 +81,9 @@ const Header = () => {
       setPageName(nextPage)
     }
     if(elem == "allRequestsButton"){
-      let nextPage = "Requests"
+      let nextPage = "Records"
+      setTableName("requests")
+      setSelectedApp("")
       setPageList([...pageList,nextPage])
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
@@ -123,15 +115,6 @@ const Header = () => {
       setUserLoggedIn(false)
       setPageName(nextPage)
     }
-  }
-
-  const handleAppOption=(app)=>{
-      setSelectedApp(app.name)
-      setTableName(app.db_table)
-      let nextPage = app.default_component
-      setPageList([nextPage])
-      setPage(pages.filter(x=>x.name===nextPage)[0])
-      setPageName(nextPage)
   }
 
   const topBarStyle={
@@ -193,22 +176,12 @@ const Header = () => {
         </div>
 
         <div className="d-flex flex-column flex-wrap mb-3 border-top-1">
-            <button id="newRequestButton" name="newRequestButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>New Request</button>
+            {pageName !="Home" &&<button id="newRequestButton" name="newRequestButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>New Request</button>}
+            <button id="allRequestsButton" name="newRequestButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>All Requests</button>
             <button id ="updateButton" name="updateButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Update Profile</button>
             <button id="signOutButton" name="signOutButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Sign out</button>
         </div>
 
-        <div className="d-flex flex-column flex-wrap mb-3 border-top-1 ">
-          {apps.map((app,index)=>(
-              <button key={index} id={app.name} name={app.name} className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleAppOption(app)}>
-                <div className="d-flex justify-content-start">
-                  <img src={`${appIcons}/${app.icon_url}`} style={{height: 25, width: 25, marginRight: 10}}></img>
-                  {app.label}
-                </div>
-              </button>
-          ))}
-        </div>
-            
         </div>
       }
     </div>

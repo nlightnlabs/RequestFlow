@@ -13,6 +13,7 @@ const Table = (props) => {
     const userData = props.userData;
     const tableName = props.tableName || ""
     const formName = props.formName || ""
+    const appData = props.appData
     const [tableData, setTableData] = useState([]);
     const [fields, setFields] = useState([])
     const [recordId, setSelectedRecordId] = useState(0)
@@ -63,6 +64,7 @@ const Table = (props) => {
                 tableData={tableData}
                 formName={formName}
                 userData = {userData}
+                appData = {appData}
                 setShowRecordDetails = {setShowRecordDetails}
                 refreshTable = {setTableData}
               />

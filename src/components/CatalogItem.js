@@ -19,8 +19,8 @@ const CatalogItem = (props) => {
     const handleQuantityChange = (inputValue)=>{
         setValue(Number(inputValue))
         let quantity = Number(inputValue)
-        let amount =  Number(quantity*Number(item.price)).toFixed(2)
-        setItem({...item,...{['quantity']:quantity},...{['amount']:amount}})
+        let item_amount =  Number(quantity*Number(item.price)).toFixed(2)
+        setItem({...item,...{['quantity']:quantity},...{['item_amount']:item_amount}})
     }
 
     const handleAddToCart = (e)=>{

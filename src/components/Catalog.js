@@ -101,7 +101,7 @@ const Catalog = (props) => {
   const setUpOrderItems = (catalogItems)=>{
     let orderItemsWithQuantity = []
       catalogItems.map(item=>{
-        orderItemsWithQuantity.push({...item,...{["quantity"]:0},...{["amount"]:0}})
+        orderItemsWithQuantity.push({...item,...{["quantity"]:0},...{["item_amount"]:0}})
       })
       setOrderItems(orderItemsWithQuantity)
   }
@@ -166,32 +166,25 @@ const Catalog = (props) => {
   // }
 
   const handleAddToCart = (item)=>{
-
-    // let cartItem = {id:item.id, 
-    //   item_name: item.item_name, 
-    //   price: item.price,
-    //   quantity: item.quantity,
-    //   amount: item.amount,
-    //   supplier: item.supplier
-    // }
   
     let updatedCart = cart
     if(cart.find(record=>record.id===item.id)){
       let indexToUpdate = updatedCart.indexOf(updatedCart.find(record=>record.id===item.id))
       if(updatedCart[indexToUpdate].quantity == item.quantity){
         alert("This item is already in the cart. Please update quantity or add another item.")
+      }else if(updatedCart[indexToUpdate].quantity <=0){
+        alert("Please provide valid quantity")
       }else{
         updatedCart[indexToUpdate] = item
       }
     }else{
       updatedCart = [...cart,item]
-      console.log([...cart,item])
     }
 
     let total = 0;
     let suppliers=[]
     updatedCart.forEach((item, index) => {
-      total = (Number(total) + Number(item.amount)).toFixed(2);
+      total = (Number(total) + Number(item.item_amount)).toFixed(2);
       suppliers.push(`${item.supplier} `)
     });
     suppliers = suppliers.toString()
@@ -200,6 +193,8 @@ const Catalog = (props) => {
     setTotalItems(updatedCart.length)
     setSuppliers(suppliers);
 
+    console.log(updatedCart)
+
     setOrderData(prevOrderForm => ({
       ...orderData,
         ["number_of_items"]: updatedCart.length,
@@ -207,7 +202,6 @@ const Catalog = (props) => {
         ['suppliers']: suppliers,
         ['items']: updatedCart
     }));
-
   }
 
   const handleSelectedAd =(adId)=>{
@@ -661,7 +655,7 @@ return(
                                 <td >{item.item_name}</td>
                                 <td style={cartCellStyle}>${Number(item.price).toLocaleString('en-US')}</td>
                                 <td style={cartCellStyle}>{Number(item.quantity).toLocaleString('en-US')}</td>
-                                <td style={cartCellStyle}>${Number(item.amount).toLocaleString('en-US')}</td>
+                                <td style={cartCellStyle}>${Number(item.item_amount).toLocaleString('en-US')}</td>
                               </tr>
                       ))}
                         <tr className="fw-bold" style={{borderTop:"2px solid gray"}}>

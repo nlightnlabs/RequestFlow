@@ -37,21 +37,21 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
   
  const boxStyle={
     width: "100%",
-    height: "100%",
+    maxHeight: "400px",
     overflowY: "auto"
-
  }
 
  const [files, setFiles] = useState([])
 
- 
 
  useEffect(()=>{
     console.log(appData)
     let x = Array.from(attachments)
     setFiles(x)
 
-    updateActivity({app:"requests",record: appData.request_summary.id , user:user,description:"New request submitted"});
+    console.log({app:"requests",record: appData.request_summary.id , user:user,description:"New request submitted"})
+
+    // updateActivity({app:"requests",record: appData.request_summary.id , user:user,description:"New request submitted"});
  },[])
 
  const handleSubmit = (e)=>{
@@ -98,7 +98,7 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
                 <div className="=flex-fill shadow shadow-lg rounded-top-2" style={{backgroundImage: "linear-gradient(45deg, rgb(9, 128, 243), rgb(0, 223, 255))", height:25}}></div>
                 
                 <div className="box d-flex flex-column border border-1 rounded-2 bg-light shadow p-3" style={boxStyle}>
-                    <table className="table" style={{overFlowY: "scroll"}}>
+                    <table className="table" style={{overFlowY: "auto"}}>
                         <tbody>
                             {
                             Object.keys(appData).map((attr, index) => (

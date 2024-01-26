@@ -21,9 +21,9 @@ const NewRecordForm = (props) => {
 
 	const setUploadFilesRef = props.setUploadFilesRef;
 
-	const [formData, setFormData] = useState();
-	const [userData, setUserData] = useState(props.user || {});
-	const [appData, setAppData] = useState(props.appData || []);
+	const [formData, setFormData] = useState(props.formData);
+	const [userData, setUserData] = useState(props.user);
+	const [appData, setAppData] = useState(props.appData);
 
 	const [sections, setSections] = useState([]);
 	const [formElements, setFormElements] = useState([]);
@@ -39,15 +39,13 @@ const NewRecordForm = (props) => {
 	const [lineItems, setLineItems] = useState([]);
 
 	const [initialValues, setInitialValues] = useState(false);
+	const [formClassList, setFormClassList] = useState("form-group")
 
 	useEffect(() => {
 		getFormFields();
-		console.log(appData.user);
-	}, []);
+	}, [props.formName]);
 
-	useEffect(() => {
-		setFormData(props.formData);
-	}, [props.formData]);
+
 
 	const getFormFields = async () => {
 		const params = {
@@ -58,10 +56,6 @@ const NewRecordForm = (props) => {
 
 		try {
 			const formFields = await getRecords(params);
-
-			// Calling a function to dynamically load data from reference apps
-			// let appData = await getAppData(formFields);
-			// console.log(appData)
 
 			// Saving the state.  This is always consistent.
 			setFormElements(formFields);
@@ -82,6 +76,7 @@ const NewRecordForm = (props) => {
 	const setUpFormData = async (formFields) => {
 		
     let tempFormData = formData;
+    console.log(appData.user.id);
 
 		if (formFields && formFields.length > 0) {
       
@@ -105,8 +100,9 @@ const NewRecordForm = (props) => {
 	const calculateForm = async (formFields, updatedFormData) => {
 		let formData = updatedFormData;
     console.log(formData);
-		console.log(formData.ship_to_location);
 
+    console.log(appData.user.id);
+  
 		formFields.map(async (item) => {
       
       console.log(item)
@@ -114,7 +110,7 @@ const NewRecordForm = (props) => {
 
 			try {
 				if (item.ui_calculation_type == "formula") {
-					value = eval(item.ui_calculated_value);
+					value = eval(item.ui_formula);
 				}
 
         if(item.ui_calculation_type == "fetch"){
@@ -125,7 +121,6 @@ const NewRecordForm = (props) => {
          value = await getValue(tableName,fieldName,conditionalField,conditionalValue)
         }
         updatedFormData = { ...updatedFormData, ...{ [item.ui_id]: value } };
-				console.log({...formData, ...updatedFormData})
 				setFormData((prevState) => ({ ...prevState, ...updatedFormData }));
 				updateParent((prevState) => ({ ...prevState, ...updatedFormData }));
 				setInitialValues(true);
@@ -364,7 +359,7 @@ const NewRecordForm = (props) => {
 			className="d-flex flex-column w-100 h-100 overflow-y-auto bg-light"
 			style={pageStyle}
 		>
-			<form>
+			<form name='form' id="form" onSubmit={handleSubmit} className={formClassList} noValidate>
 				{initialValues && (
 					<div
 						className="d-flex flex-column"

@@ -91,6 +91,7 @@ const AdditionalInfo = () => {
 }
 
   const handleSubmit =async (e)=>{
+
     e.preventDefault();
 
     const form = e.target
@@ -102,7 +103,8 @@ const AdditionalInfo = () => {
       setPageList(pageListCopy)
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageName(nextPage)
-    }else{   
+    }
+    else{   
 
       if(!form.checkValidity()){
         e.preventDefault();
@@ -119,64 +121,66 @@ const AdditionalInfo = () => {
           setAppData({...appData, request_summary})
         }
 
-        const getRecordId = async (req, res)=>{
-          const getNewRecordIDQuery = `Select id from requests where requester_user_id ='${appData.user_info.id}' order by id desc limit 1;`
-          console.log(getNewRecordIDQuery)
-
-          try{  
-            const responseId = await axios.post(`/db/query`,{query: getNewRecordIDQuery})
-            console.log(responseId)
-
-            const id = await responseId.data[0]
-            console.log(id)
-
-            let request_summary = {...appDataCopy.request_summary,...id}
-            setAppData({...appData, request_summary})
-          }catch(error){
-            console.log(error)
-          }
-        }
-
-        const insertNewRequestQuery = `INSERT INTO requests (
-          requester, 
-          request_type, 
-          subject, 
-          request_details,
-          need_by, 
-          attachments,
-          stage,
-          status,
-          request_date,
-          requester_user_id
-          )
-          values(
-            '${appDataCopy.request_summary.requester || "No requester on record"} ',
-             '${appDataCopy.request_summary.request_type || "No reuquest types selected"}',
-             '${appDataCopy.request_summary.subject || "No subject on record"}',
-             '${appDataCopy.request_summary.request_details || "No request details provided"}',
-            '${(new Date(appDataCopy.request_summary.need_by)).toLocaleDateString('en-US') || " No date on record"}',
-            '${JSON.stringify(appDataCopy.request_summary.attachments).replace(/"/g,'') || "No attachments"}',
-            'Draft',
-            'Open',
-            '${((new Date()).toLocaleDateString('en-US')) || " "}',
-            '${appDataCopy.user_info.id}'
-          );`
+        const addNewRequestToDb = async ()=>{
+          const insertNewRequestQuery = `INSERT INTO requests (
+            requester, 
+            request_type, 
+            subject, 
+            request_details,
+            need_by, 
+            attachments,
+            stage,
+            status,
+            request_date,
+            requester_user_id
+            )
+            values(
+              '${appDataCopy.request_summary.requester || "No requester on record"} ',
+               '${appDataCopy.request_summary.request_type || "No reuquest types selected"}',
+               '${appDataCopy.request_summary.subject || "No subject on record"}',
+               '${appDataCopy.request_summary.request_details || "No request details provided"}',
+              '${(new Date(appDataCopy.request_summary.need_by)).toLocaleDateString('en-US') || " No date on record"}',
+              '${JSON.stringify(appDataCopy.request_summary.attachments).replace(/"/g,'') || "No attachments"}',
+              'Draft',
+              'Open',
+              '${((new Date()).toLocaleDateString('en-US')) || " "}',
+              '${appDataCopy.user_info.id}'
+            );`
           
-          console.log(insertNewRequestQuery)
+            console.log(insertNewRequestQuery)
+            try {
+                const submitResponse = await axios.post(`/db/query`,{query: insertNewRequestQuery})
+                const data = submitResponse.data
+                getRecordId()
+            }catch(error){
+                console.log(error)
+            }
+        }
+        addNewRequestToDb()
 
-          try {
-              const submitResponse = await axios.post(`/db/query`,{query: insertNewRequestQuery})
-              const data = await submitResponse.data
-              await getRecordId()
+
+        const getRecordId = async (req, res)=>{
+            const getNewRecordIDQuery = `Select id from requests where requester_user_id ='${appData.user_info.id}' order by id desc limit 1;`
+            console.log(getNewRecordIDQuery)
+  
+            try{  
+              const responseId = await axios.post(`/db/query`,{query: getNewRecordIDQuery})
+              console.log(responseId)
+  
+              const id = await responseId.data[0]
+              console.log(id)
+  
+              let request_summary = {...appDataCopy.request_summary,...id}
+              setAppData({...appData, request_summary})
 
               let nextPage = "Request Summary"
               setPage(pages.filter(x=>x.name===nextPage)[0])
               setPageList([...pageList,nextPage])
               setPageName(nextPage)
-
-          }catch(error){
+            }catch(error){
               console.log(error)
-          }
+            }
+        }
       }
       setFormClassList('form-group was-validated')
     }
@@ -213,7 +217,9 @@ const AdditionalInfo = () => {
     }
     console.log(resetData)
     setAppData(resetData)
-}
+  }
+
+
   const [pageClass, setPageClass] = useState("container mt-5 animate__animated animate__fadeIn animate__duration-0.5s")
 
   return (

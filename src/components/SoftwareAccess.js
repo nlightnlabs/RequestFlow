@@ -32,6 +32,13 @@ const SoftwareAccess = () => {
     setInitialFormData
 } = useContext(Context)
 
+useEffect(()=>{
+  setPage(pages.filter(x=>x.name===pageName)[0])
+  setPageList([...pageList,pageName])
+  getProducts()
+  initializeUsers()
+},[])
+
   let formData = {}
   const productRef = useRef()
   const supplierRef = useRef()
@@ -207,15 +214,7 @@ const handleReset = ()=>{
     }
   }
 
-  useEffect(()=>{
-    console.log(appData)
-    console.log(page)
-    console.log(pageList)
-
-    getProducts()
-    initializeUsers()
-
-  },[])
+  
 
   const inputRequired = (index)=>{
     if(index==0){
@@ -252,6 +251,13 @@ const handleReset = ()=>{
     }
   },[contentContainerRef])
 
+  const sectionTitleStyle={
+    fontSize: 32,
+    fontWeight: "normal",
+    color: "#5B9BD5",
+    marginBottom: 10
+  }
+
   return (
     <div className = {pageClass} style={{height:"100%", overflow:"hidden"}}>
       
@@ -260,7 +266,7 @@ const handleReset = ()=>{
 
         <div className="col-12 col-lg-6" style={{height: "100%"}}>
           
-          <div className="text-left mb-3 border-bottom border-5" style={{fontSize:"32px"}}>{pageName} Request</div>
+        <div style={sectionTitleStyle}>{pageName}</div>
           
           <form style={{height: "100%", overflowY:"auto"}}
             name='form' id="form" 

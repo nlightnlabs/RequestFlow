@@ -37,6 +37,8 @@ const MultiInput = forwardRef((props, ref) => {
   const height = props.height
   const dropDownFill = props.dropDownFill
   const allowAddData = props.allowAddData
+  const marginTop = props.marginTop
+  const marginBottom = props.marginBottom
 
   const [value, setValue] = useState("")
   const [options, setOptions] = useState([])
@@ -47,7 +49,7 @@ const MultiInput = forwardRef((props, ref) => {
 
   const [startDate, setStartDate] = useState(new Date());
 
-  const [formGroupClass, setFormGroupClass] = useState("form-floating w-100")
+  const [formClassList, setFormClassList] = useState("form-floating w-100")
 
   const inputRef = useRef("")
   const containerRef = useRef("")
@@ -65,9 +67,9 @@ const MultiInput = forwardRef((props, ref) => {
      }
 
      if(props.label && props.label !==""){
-      setFormGroupClass("form-floating w-100")
+      setFormClassList("form-floating w-100")
      }else{
-      setFormGroupClass("form-group w-100")
+      setFormClassList("form-group w-100")
      }
 
   },[props.list, props.readonly, props.disabled, props.label])
@@ -84,7 +86,9 @@ const MultiInput = forwardRef((props, ref) => {
     left: 0,
     get display(){if(layout=="stacked"){return "block"}else{return "flex"}},
     width: "100%",
-    minHeight: height
+    minHeight: height,
+    marginTop: marginTop || 0,
+    marginBottom: marginTop || 10
   }
   
 
@@ -284,7 +288,7 @@ const MultiInput = forwardRef((props, ref) => {
       onMouseOver={(e)=>handleHover(e)}
       onMouseLeave={(e)=>handleHover(e)}
     >
-          <div className={formGroupClass}>
+          <div className={formClassList}>
           {type == "textarea" ?
               <textarea 
                 className="form-control"

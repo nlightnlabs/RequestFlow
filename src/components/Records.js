@@ -2,12 +2,16 @@ import React, {useState, useContext, useEffect, useRef} from 'react';
 import {Context } from './Context.js';
 import "bootstrap/dist/css/bootstrap.min.css"
 import Table from './Table.js';
-import List from './List.js';
-import { getTable } from './apis/axios.js';
+import { getTable, getRecords } from './apis/axios.js';
 import { toProperCase } from './functions/formatValue.js';
-import ParetoChart from './ParetoChar.js';
+import ValueChart from './ValueChart.js'
+import ParetoChart from './ParetoChart.js';
+import Chart from "chart.js/auto";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+Chart.register(ChartDataLabels)
 
-const Requests = (props) => {
+
+const Records = (props) => {
 
   const {
     user,
@@ -45,16 +49,15 @@ const Requests = (props) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [showTable, setShowTable] = useState(true)
   const [showCharts, setShowCharts] = useState(true)
+  const [chartProps, setChartProps] = useState([])
 
-  const formName = apps.find(item=>item.name===selectedApp).edit_form_name || ""
+  const formName = "edit_requests"
 
   const chartsSectionRef = useRef(null)
   const [chartsSectionWindowSize, setChartsSectionWindowSize] = useState({})
 
-  const getData = async (req, res)=>{
-    console.log(tableName)
+  const getTableData = async (req, res)=>{
     const response = await getTable(tableName)
-    console.log(response.data)
 
     setData(response.data.sort((a, b) => {
       return  b.id-a.id;
@@ -62,34 +65,57 @@ const Requests = (props) => {
     setFields(Object.keys(response.data[0]))
 }
 
+const getChartProps =  async (req, res)=>{
+  // const chartProps = apps.find(item=>item.name==selectedApp).chart_props
+
+  const params = {
+    tableName: "charts",
+    conditionalField: "app",
+    condition: selectedApp
+}
+  const response = await getRecords(params)
+  console.log(response)
+
+  setChartProps(response)
+}
+
 useEffect(()=>{
-  getData()
+  getTableData()
+  getChartProps()
 },[])
 
 useEffect(()=>{
-  setChartsSectionWindowSize({
+  showCharts && setChartsSectionWindowSize({
     width: chartsSectionRef.current.clientWidth,
     height: chartsSectionRef.current.clientHeight,
   })
 },[chartsSectionRef])
 
 const chartContainerStyle={
-  position: "sticky",
-  top: 0,
-  width: (chartsSectionWindowSize.width/3-20),
-  height: 300,
+  width: (chartsSectionWindowSize.width/3),
   minWidth: 400, 
-  minHeight: 300,
-  margin: 5,
-  overflowY: "fixed",
-  overflowX: "auto"
+  minHeight: 250,
+  height: "90%",
+  overflowX: "auto",
+  margin: "10px"
+}
+
+const labelContainerStyle={
+  minWidth: 200, 
+  height: "100%",
+  minHeight: 150,
+  height: "90%",
+  overflowX: "auto",
+  margin: "10px"
 }
 
 const tableContainerStyle = {
-  height: "100vh", 
+  height: "60vh", 
   overflowY:"auto",
   padding: 20
 }
+
+
 
 const [pageClass, setPageClass] = useState("flex-container flex-column animate__animated animate__fadeIn animate__duration-0.5s")
 
@@ -100,18 +126,37 @@ const [pageClass, setPageClass] = useState("flex-container flex-column animate__
             
             <h2 className="ps-3">{toProperCase(tableName.replaceAll("_"," "))}</h2>
             {/* Charts container */}
-            <div ref = {chartsSectionRef} className="d-flex justify-content-around" style={{height: "35vh", overflow: 'auto', backgroundColor:"rgb(220,220,220)"}}>
-              <div className="d-flex border border-1 bg-white justify-content-center rounded-3 shadow m-3 w-md-100" style={chartContainerStyle}>
-              
-              </div>
-              <div className="d-flex border border-1 bg-white justify-content-center rounded-3 shadow m-3 w-md-100" style={chartContainerStyle}>
-              
-              </div>
-              <div className="d-flex border border-1 bg-white justify-content-center rounded-3 shadow m-3 w-md-100" style={chartContainerStyle}>
-              
-              </div>
-            </div>
 
+            <div ref = {chartsSectionRef} className="d-flex flex-wrap justify-content-center" style={{height: "35vh", overflow: 'auto'}}>
+            {
+              Array.isArray(chartProps) &&
+              chartProps.map((props,index)=>(
+                props.type === "ValueChart"?
+                <div key={index} className="d-flex justify-content-center bg-white border rounded-3 shadow" style={labelContainerStyle}>
+                  <ValueChart
+                      props = {props}
+                  />
+                </div>
+                :
+                props !=null && props.type === "BarChart"?
+                <div className="d-flex justify-content-center  bg-white border rounded-3 shadow" style={chartContainerStyle}>
+                  <ParetoChart
+                      props = {props}
+                    />
+                </div>
+                :
+                props !=null && props.type === "ParetoChart"?
+                <div className="d-flex justify-content-center bg-white border rounded-3 shadow" style={chartContainerStyle}>
+                  <ParetoChart
+                      props = {props}
+                    />
+                </div>
+                :
+                null
+              ))
+            }
+            </div>
+            
             {/* Show table container for large screen size */}
             {data.length>0 &&
             <div className="d-flex bg-light" style={tableContainerStyle}>
@@ -123,19 +168,9 @@ const [pageClass, setPageClass] = useState("flex-container flex-column animate__
             </div>
             }
 
-            {/* Show list container for small screen size */}
-            {data.length>0 &&
-            <div className="d-flex d-md-none justify-content-center flex-wrap" style={{minHeight: "50%", overflowY:"scroll"}}>
-                <List
-                  tableName={tableName}
-                  userData={appData.user_info}
-                  formName={formName}
-                />
             </div>
-            }
-        </div>
     </div>
   )
 }
 
-export default Requests
+export default Records

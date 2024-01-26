@@ -16,11 +16,13 @@ const DataEntryForm = (props) => {
     const tableName = props.tableName
     const recordId = props.recordId
     const userId = props.userId
-    const updateParent = props.updateParent || null
+    const updateParent = props.updateParent
     const updateParentStates = props.updateParentStates
-    const [formData, setFormData] = useState();
-	  const [userData, setUserData] = useState(props.user || {});
-    const [appData, setAppData] = useState(props.appData || []);
+
+    const [formData, setFormData] = useState(props.formData);
+	  const [userData, setUserData] = useState(props.user);
+	  const [appData, setAppData] = useState(props.appData);
+
 
 	  const setUploadFilesRef = props.setUploadFilesRef;
     const [initialFormData, setInitialFormData] = useState({})
@@ -77,7 +79,7 @@ const DataEntryForm = (props) => {
     
         // Saving the state. This is always consistent.
         setFormElements(formFields);
-        console.log(formFields)
+  
     
         // Calling a function to dynamically pull multiple dropdown lists from db
         getDropDownLists(formFields);
@@ -119,7 +121,7 @@ const DataEntryForm = (props) => {
     const calculateForm = async (formFields, updatedFormData) => {
       let formData = updatedFormData;
       console.log(formData);
-      console.log(formData.ship_to_location);
+  
   
       formFields.map(async (item) => {
         
@@ -128,7 +130,7 @@ const DataEntryForm = (props) => {
   
         try {
           if (item.ui_calculation_type == "formula") {
-            value = eval(item.ui_calculated_value);
+            value = eval(item.ui_formula);
           }
   
           if(item.ui_calculation_type == "fetch"){
@@ -309,12 +311,14 @@ const DataEntryForm = (props) => {
               getFormData(formElements)
 
               // Update activity log
-              updateActivityLog("orders", recordId, userData.email, JSON.stringify(updatesToSendToDb))
+              updateActivityLog("orders", recordId, appData.user.email, JSON.stringify(updatesToSendToDb))
 
               //Refresh UI in Parent object
               updateParentStates.forEach(func=>{
+                console.log("Updating parent states");
                 func();
               })
+              
 
               }
               else{

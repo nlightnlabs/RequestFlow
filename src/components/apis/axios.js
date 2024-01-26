@@ -32,7 +32,7 @@ export const getTable = async (tableName, res)=>{
       const {data,dataTypes} = await result.data
       return ({data,dataTypes})
     }catch(error){
-      // console.log(error)
+      console.log(error)
     }
   }
 
@@ -87,11 +87,11 @@ export const getRecords = async (req, res)=>{
 
   try{
     const result = await dbUrl.post("/db/getRecords",{params})
-    //console.log(result)
+    console.log(result)
     const data = await result.data
     return (data)
   }catch(error){
-    //console.log(error)
+    console.log(error)
   }
 }
 

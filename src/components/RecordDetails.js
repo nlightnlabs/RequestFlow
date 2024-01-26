@@ -58,8 +58,6 @@ const RecordDetails = (props) => {
         resize: "horizontal",
       }
 
-
-
       useEffect(()=>{
         getRecordData()
         getActivityData()
@@ -85,6 +83,7 @@ const RecordDetails = (props) => {
                     formData={recordData}
                     fields = {fields}
                     userId={userData.id}
+                    appData={{user: userData}}
                     updateParent = {setFormData}
                     updateParentStates = {[getActivityData, getRecordData]}
                 />

@@ -25,11 +25,7 @@ import UserInfo from './components/UserInfo.js';
 import ForgotPassword from './components/ForgotPassword.js';
 import ResetPassword from './components/ResetPassword.js';
 import Header from './components/Header.js';
-import Requests from './components/Requests.js';
-import GenAIStudio from './components/GenAIStudio.js';
 import Records from './components/Records.js'
-import Catalog from './components/Catalog.js'
-import NewsArticle from './components/NewsArticle.js';
 
 
 function App() {
@@ -61,9 +57,6 @@ function App() {
     setSelectedApp
   } = useContext(Context)
 
-  
-
-
 
   let pageData=[
     {name: "Home", component: <Home/>, data: "request_summary", request_type: false, description: "Description for this request", icon:`${appIcons}/home_icon.png`},
@@ -83,15 +76,10 @@ function App() {
     {name: "Other", component: <NonStandard/>, data: "non_standard_request_data", request_type: true, description: "Select this if you don't see what you need",icon:`${appIcons}/other_request_icon.png`},
     {name: "Additional Info", component: <AdditionalInfo/>, data: "request_summary", request_type: false, description: "Description for this request",icon:`${appIcons}/additional_info.png`},
     {name: "Request Summary", component: <RequestSummary/>, data: "request_summary", request_type: false, description: "Description for this request",icon:`${appIcons}/request_summary.png`},
-    {name: "Requests", component: <Requests/>, data: "request_page_settings", request_type: false, description: "Dashboard for all requets",icon:`${appIcons}/requests_icon.png`},
     {name: "Add Business", component: <AddBusiness/>, data: "new_business_data", request_type: false, description: "Description for this request",icon:`${appIcons}/add_business.png`},
     {name: "Add Product", component: <AddProduct/>, data: "new_product_data", request_type: false, description: "Description for this request",icon:`${appIcons}/add_product.png`},
-    {name: "GenAIStudio", component: <GenAIStudio/>, data: "GenAIStudio", request_type: false, description: "Description for this request",icon:`${appIcons}/gpt_icon.png`},
     {name: "Records", component: <Records/>, data: "record_data", request_type: false, description: "Description for this request",icon:`${appIcons}/record.png`},
-    {name: "Catalog", component: <Catalog/>, data: "catalog_data", request_type: false, description: "Description for this request",icon:`${appIcons}/shopping_icon.png`},
-    {name: "News Article", component: <NewsArticle/>, data: "news_article", request_type: false, description: "Description for this request",icon:`${appIcons}/news_article_icon.png`}
   ]
-
 
   const getPageData = async(req, res)=>{
     try{
@@ -127,8 +115,6 @@ function App() {
     width: "100vw",
     overflow: "hidden"
   }
-
-  
 
 
   return (

@@ -18,7 +18,7 @@ const Cart = (props) => {
         
         let total = 0
         cart.map((item)=>{
-            total = (Number(total)+Number(item.amount)).toFixed(2)
+            total = (Number(total)+Number(item.item_amount)).toFixed(2)
         })
         setTotalAmount(total)
     }
@@ -31,11 +31,11 @@ const Cart = (props) => {
     const handleQuantityChange = (cartIndex, inputValue)=>{
         let quantity = inputValue
         let price = cart[cartIndex].price
-        let amount = quantity*price
+        let item_amount = quantity*price
 
         let tempCart = cart
         tempCart[cartIndex].quantity = inputValue
-        tempCart[cartIndex].amount = amount
+        tempCart[cartIndex].item_amount = item_amount
         setCart(tempCart)
 
         summarizeCart()
@@ -89,7 +89,7 @@ const Cart = (props) => {
                     <td >{item.item_name}</td>
                     <td style={cartCellStyle}>${Number(item.price).toFixed(2)}</td>
                     <td style={cartCellStyle}><input style={cartInputStyle} value={item.quantity} onChange={(e)=>handleQuantityChange(cartIndex, e.target.value)}></input></td>
-                    <td style={cartCellStyle}>${Number(item.amount).toFixed(2)}</td>
+                    <td style={cartCellStyle}>${Number(item.item_amount).toFixed(2)}</td>
                     <td style={{...cartCellStyle,['fontWeight']:'bold'}}><img style={{height: 25, width: 25}} src={`${appIcons}/delete_icon.png`} onClick={(e)=>{handleDelete(cartIndex)}}></img></td>
                 </tr>
             ))}
